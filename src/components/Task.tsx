@@ -13,7 +13,12 @@ interface ITask{
 export function Task(task: ITask) {
     const navigator = useNavigate();
     const [isOpenModal, setIsOpenModal] = useState(false);
-
+    let style = '';
+    if(task.isPossible){
+        style="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2";
+    }else {
+        style = "inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2";
+    }
     const handleClick = () => {
         if (task.isModal) {
             setIsOpenModal(true);
@@ -37,7 +42,7 @@ export function Task(task: ITask) {
                 <p className="text-gray-700 text-base">{task.description}</p>
             </div>
             <div className="px-6 py-4">
-        <button disabled={!task.isPossible} className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2" onClick={()=>{navigator(task.redirect)}}>
+        <button disabled={!task.isPossible} className={style} onClick={()=>{navigator(task.redirect)}}>
             Перейти
         </button>
             </div>

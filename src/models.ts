@@ -20,3 +20,26 @@ export interface IUser{
     role:string,
     userStatus:string
 }
+export interface IResult {
+    question_type: string,
+    current_result: number,
+    max_result: number
+}
+
+export interface ICandidateInfo {
+    user_info: {
+        id: number,
+        firstname: string,
+        lastname: string,
+        status: string,
+        activity: string
+    },
+    resume: FormData,
+    quiz_result: [
+        {
+            type: string,
+            result: IResult[],
+            duration: number
+        }
+    ]
+}

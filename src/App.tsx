@@ -8,17 +8,15 @@ import {MainPage} from "./components/MainPage";
 import {Task} from "./components/Task"
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {Cabinet} from "./components/Cabinet";
+import {Quiz} from "./components/Quiz";
+import {CandidatePage} from "./components/CandidatePage";
+import {CandidateInfo} from "./components/CandidateInfo";
 
 
 function App() {
-    const {candidates, loading, error} = useCandidates();
 
     return (
-        // <div className={"container mx-auto max-w-2xl pt-5"}>
-        //     {loading && <Loader/>}
-        //     {error && <ErrorMessage error={error}/>}
-        //     {candidates.map(candidate => <Candidate candidate={candidate} key={candidate.id}/>)}
-        // </div>
+
         <BrowserRouter>
             <Routes>
                 <Route path="*" element={<MainPage/>}/>
@@ -26,6 +24,9 @@ function App() {
                 <Route path="/auth" element={<AuthForm/>}/>
                 <Route path="/resume" element={<FormComponent/>}/>
                 <Route path="/cabinet" element={<Cabinet/>}/>
+                <Route path="/quiz/:id" element={<Quiz/>}/>
+                <Route path="/candidates" element={<CandidatePage/>}/>
+                <Route path="/candidates/:id" element={<CandidateInfo/>}/>
             </Routes>
         </BrowserRouter>
 

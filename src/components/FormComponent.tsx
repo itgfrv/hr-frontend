@@ -2,57 +2,93 @@ import React, {useEffect, useState} from 'react';
 import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 import {Header} from "./Header";
+import {Loader} from "./Loader";
+import {ErrorMessage} from "./ErrorMessage";
 
 interface FormData {
     questions: { question: string; question_id: number }[];
     answers: { question_id: number; answer_body: string }[];
 }
-interface AnswerRequest{
-            "question_id": number,
-            "answer_body": string
+
+interface Answer {
+    "question_id": number,
+    "answer_body": string
+}
+
+interface Question {
+    "question_id": number,
+    "question": string,
+    "answer_body": string
 }
 
 export function FormComponent() {
     const navigation = useNavigate();
-    const [answers, setAnswers] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [data, setData] = useState<FormData>({questions: [], answers: []});
+    const [questions, setQuestions] = useState<Question[]>([]);
 
     async function getQuestions() {
         const token = localStorage.getItem("token");
         try {
             setLoading(true);
             const data = await axios.get<FormData>("http://localhost:8080/api/v1/resume/questions", {headers: {"Authorization": `Bearer ${token}`}});
-            setData(data.data);
-            setLoading(true);
-        }catch (e: unknown) {
+            const list: Question[] = [];
+
+            data.data.questions.map((q) => {
+                list.push({
+                    question_id: q.question_id,
+                    question: q.question,
+                    answer_body: getAnswer(q.question_id, data.data.answers),
+                })
+            });
+            setQuestions(list);
+            setLoading(false);
+        } catch
+            (e: unknown) {
             const error = e as AxiosError;
             setLoading(false);
             setError(error.message);
         }
     }
+
+
     async function updateQuestions() {
         const token = localStorage.getItem("token");
         try {
             setLoading(true);
-            const data = await axios.post<FormData>("http://localhost:8080/api/v1/resume/update", {headers: {"Authorization": `Bearer ${token}`}});
-            setData(data.data);
-            setLoading(true);
-        }catch (e: unknown) {
+            const list: Answer[] = [];
+            questions.map(
+                (q) => {
+                    list.push({question_id: q.question_id, answer_body: q.answer_body})
+                }
+            );
+            const data = await axios.put<FormData>("http://localhost:8080/api/v1/resume/update", list, {headers: {"Authorization": `Bearer ${token}`}});
+            setLoading(false);
+            alert("Данные сохранены!");
+        } catch (e: unknown) {
             const error = e as AxiosError;
             setLoading(false);
             setError(error.message);
         }
     }
+
     async function sendQuestions() {
         const token = localStorage.getItem("token");
         try {
             setLoading(true);
-            const data = await axios.get<FormData>("http://localhost:8080/api/v1/resume/send", {headers: {"Authorization": `Bearer ${token}`}});
-            setData(data.data);
-            setLoading(true);
-        }catch (e: unknown) {
+            const list: Answer[] = [];
+            questions.map(
+                (q) => {
+                    list.push({question_id: q.question_id, answer_body: q.answer_body})
+                }
+            );
+            let wantSend = confirm("Хотите ли вы отправить данные на проверку?\nПосле отправки данных не будет возможности изменить");
+            if (wantSend) {
+                const data = await axios.post<FormData>("http://localhost:8080/api/v1/resume/send", list, {headers: {"Authorization": `Bearer ${token}`}});
+                navigation('/cabinet')
+            }
+            setLoading(false);
+        } catch (e: unknown) {
             const error = e as AxiosError;
             setLoading(false);
             setError(error.message);
@@ -61,61 +97,86 @@ export function FormComponent() {
 
     useEffect(() => {
         getQuestions();
-        const initialAnswers: string[] = [];
-        data.questions.forEach((question) => {
-            const answer = data.answers.find((a) => a.question_id === question.question_id);
-            initialAnswers.push(answer ? answer.answer_body : '');
-        });
-        setAnswers(initialAnswers);
-    },[]);
+    }, []);
 
-    const handleInputChange = (index: number, answer: string) => {
-        const newAnswers = [...answers];
-        newAnswers[index] = answer;
-        setAnswers(newAnswers);
+    const handleInputChange = (index: number, answer: string, question: string) => {
+        setQuestions(prevQuestion => {
+            const newQuestions = [...prevQuestion];
+            const existingAnswerIndex = newQuestions.findIndex(item => item.question_id === index);
+
+            if (existingAnswerIndex !== -1) {
+                newQuestions[existingAnswerIndex] = {
+                    question_id: index,
+                    answer_body: answer,
+                    question: question
+                };
+            } else {
+                newQuestions.push({
+                    question_id: index,
+                    answer_body: answer,
+                    question: question
+                });
+            }
+
+            return newQuestions;
+        });
     };
+
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        // Отправка данных на сервер
-        console.log('Отправленные ответы:', answers);
+        sendQuestions();
     };
+    const handleUpdate = (event: React.FormEvent) => {
+        event.preventDefault();
+        updateQuestions();
+    };
+
+    function getAnswer(index: number, answ: { question_id: number; answer_body: string }[]) {
+        const a = answ.find((a) => a.question_id === index);
+        const ans: string = a ? a.answer_body : '';
+        return ans;
+    }
 
     return (
         <>
             <Header/>
-        <form onSubmit={handleSubmit} className="p-4 flex flex-col items-center">
-            <div className="w-1/4">
-            {data.questions.map((question, index) => (
-                <div key={question.question_id} className="mb-4">
-                    <label htmlFor={`question-${index}`} className="block text-gray-700 font-bold mb-2">
-                        {question.question}
-                    </label>
-                    <input
-                        type="text"
-                        id={`question-${index}`}
-                        value={answers[index]}
-                        onChange={(e) => handleInputChange(index, e.target.value)}
-                        className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
-                    />
+            <form onSubmit={handleSubmit} className="p-4 flex flex-col items-center">
+                <div className="w-1/4">
+                    {questions.map((question) => (
+                        <div key={question.question_id} className="mb-4">
+                            <label htmlFor={`${question.question_id}`} className="block text-gray-700 font-bold mb-2">
+                                {question.question}
+                            </label>
+                            <input
+                                type="text"
+                                id={`${question.question_id}`}
+                                value={question.answer_body}
+
+                                onChange={(e) => handleInputChange(question.question_id, e.target.value, question.question)}
+                                className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+                            />
+                        </div>
+                    ))}
                 </div>
-            ))}
-            </div>
-            <div className="mt-6">
-                <button
-                    type="submit"
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                    Отправить
-                </button>
-                <button
-                    //type="submit"
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                    Сохранить
-                </button>
-            </div>
-        </form>
+                <div className="mt-4">
+                    <button
+                        type="submit"
+                        className="mr-4 bg-red-500 hover:bg-red-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >
+                        Отправить
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleUpdate}
+                        className="ml-4 bg-red-500 hover:bg-red-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >
+                        Сохранить
+                    </button>
+                </div>
+                {loading && <Loader/>}
+                {error && <ErrorMessage error={error}/>}
+            </form>
         </>
     );
 }

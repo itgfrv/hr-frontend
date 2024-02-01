@@ -24,31 +24,37 @@ export function RegistrationForm() {
     const [error, setError] = useState('')
 
     async function fetchRegistration() {
-        if (formData.confirmPassword !== formData.password) {
-            setError('Пароли не совпадают');
+        try {
+            setError('')
+            setLoading(true);
+            const response = await axios.post('http://localhost:8080/api/v1/auth/register', {
+                firstname: formData.firstName,
+                lastname: formData.lastName,
+                email: formData.email,
+                password: formData.password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            localStorage.setItem('token', response.data.token);
+            setLoading(false);
+            return true;
+        } catch (e: unknown) {
+            const error = e as AxiosError;
+            setLoading(false);
+            setError(error.message);
+            return false
+        }
+    }
+
+    function validateForm() {
+        if (formData.password !== formData.confirmPassword) {
+            setError('Пароли не совпадают')
+            return false;
         } else {
-            try {
-                setError('')
-                setLoading(true);
-                const response = await axios.post('http://localhost:8080/api/v1/auth/register', {
-                    firstname: formData.firstName,
-                    lastname: formData.lastName,
-                    email: formData.email,
-                    password: formData.password
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                console.log(response.data.token);
-                //setCandidates(response.data);
-                setLoading(false);
-            } catch
-                (e: unknown) {
-                const error = e as AxiosError;
-                setLoading(false);
-                setError(error.message);
-            }
+            setError('')
+            return true;
         }
     }
 
@@ -60,9 +66,15 @@ export function RegistrationForm() {
         }));
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        fetchRegistration();
+        if (validateForm()) {
+            const result = await fetchRegistration();
+            if (result) {
+                navigation('/cabinet')
+            }
+        }
     };
 
     return (
@@ -95,7 +107,7 @@ export function RegistrationForm() {
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="lastName"
                             type="text"
-                            placeholder="фамилия"
+                            placeholder="Фамилия"
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
@@ -154,7 +166,7 @@ export function RegistrationForm() {
                     {loading && <p>Загрузка</p>}
                     {error && <span className={"text-red-500"}>{error}</span>}
                 </form>
-                <div className={"text-center"}>Уже есть аккаута?</div>
+                <div className={"text-center"}>Уже есть аккаут?</div>
                 <div className={"mt-4 flex justify-center"}>
                     <button
                         className="w-48 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"

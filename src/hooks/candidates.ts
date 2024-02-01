@@ -8,10 +8,11 @@ export function useCandidates() {
     const [error, setError] = useState('')
 
     async function fetchCandidates() {
+        const token = localStorage.getItem('token');
         try {
             setError('')
             setLoading(true);
-            const response = await axios.get<ICandidate[]>('http://localhost:8080/api/v1/form');
+            const response = await axios.get<ICandidate[]>('http://localhost:8080/api/v1/form',{headers: {"Authorization": `Bearer ${token}`}});
             setCandidates(response.data);
             setLoading(false);
         } catch (e: unknown) {
