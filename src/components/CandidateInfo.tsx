@@ -35,6 +35,32 @@ export function CandidateInfo() {
         const ans: string = a ? a.answer_body : '';
         return ans;
     }
+    function msToHoursMinutesSecondsString(ms:number) {
+        // Преобразуем миллисекунды в секунды
+        let seconds = Math.floor(ms / 1000);
+        // Вычисляем количество часов
+        let hours = Math.floor(seconds / 3600);
+        // Оставшиеся секунды после вычета часов
+        seconds %= 3600;
+        // Вычисляем количество минут
+        let minutes = Math.floor(seconds / 60);
+        // Оставшиеся секунды после вычета минут
+        seconds %= 60;
+
+        // Форматируем строку для вывода
+        let timeString = '';
+        if (hours > 0) {
+            timeString += hours + ' часов ';
+        }
+        if (minutes > 0) {
+            timeString += minutes + ' минут ';
+        }
+        if (seconds > 0) {
+            timeString += seconds + ' секунд';
+        }
+        return timeString.trim();
+    }
+
     async function givePermission(){
         const token = localStorage.getItem('token');
         try {
@@ -116,7 +142,7 @@ export function CandidateInfo() {
                                     )}
                                 </ul>
                                 <span>
-                                    • Потрачено времени:
+                                    • Потрачено времени:{msToHoursMinutesSecondsString(result.duration)}
                                 </span>
 
                             </div>
