@@ -21,7 +21,7 @@ export function AuthForm() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.post('http://90.156.229.82:8080/api/v1/auth/authenticate', {
+            const response = await axios.post('http://80.68.156.54:8080/api/v1/auth/authenticate', {
                 email: formData.email,
                 password: formData.password
             }, {

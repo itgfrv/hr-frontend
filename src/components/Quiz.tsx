@@ -51,7 +51,7 @@ export function Quiz() {
         try {
             setError('');
             setLoading(true)
-            const quizData = await axios.get<Quiz>('http://90.156.229.82:8080/api/v1/quiz/' + id, {headers: {"Authorization": `Bearer ${token}`}});
+            const quizData = await axios.get<Quiz>('http://80.68.156.54:8080/api/v1/quiz/' + id, {headers: {"Authorization": `Bearer ${token}`}});
             setQuiz(quizData.data);
             setLoading(false);
 
@@ -67,7 +67,7 @@ export function Quiz() {
         try {
             setError('');
             setLoading(true)
-            const resultData = await axios.post<Result[]>('http://90.156.229.82:8080/api/v1/quiz/' + id, selectedAnswers, {headers: {"Authorization": `Bearer ${token}`}});
+            const resultData = await axios.post<Result[]>('http://80.68.156.54:8080/api/v1/quiz/' + id, selectedAnswers, {headers: {"Authorization": `Bearer ${token}`}});
             setQuiz(null)
             setResult(resultData.data);
             console.log(resultData.data);

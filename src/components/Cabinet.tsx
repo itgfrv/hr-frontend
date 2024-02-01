@@ -31,7 +31,7 @@ export function Cabinet() {
             try{
                 setError('');
                 setLoading(true)
-                const response = await axios.get<ITaskStatus>("http://90.156.229.82:8080/api/v1/form/task-info", {headers: {"Authorization": `Bearer ${token}`}})
+                const response = await axios.get<ITaskStatus>("http://80.68.156.54:8080/api/v1/form/task-info", {headers: {"Authorization": `Bearer ${token}`}})
                 setStatus(response.data);
                 setLoading(false)
             } catch (e: unknown) {
