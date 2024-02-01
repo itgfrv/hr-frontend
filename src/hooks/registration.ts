@@ -11,7 +11,7 @@ export function useRegistration() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.get<ICandidate[]>('http://localhost:8080/api/v1/form');
+            const response = await axios.get<ICandidate[]>('http://90.156.229.82:8080/api/v1/form');
             setCandidates(response.data);
             setLoading(false);
         } catch (e: unknown) {

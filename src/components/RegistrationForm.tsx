@@ -27,7 +27,7 @@ export function RegistrationForm() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.post('http://localhost:8080/api/v1/auth/register', {
+            const response = await axios.post('http://90.156.229.82:8080/api/v1/auth/register', {
                 firstname: formData.firstName,
                 lastname: formData.lastName,
                 email: formData.email,

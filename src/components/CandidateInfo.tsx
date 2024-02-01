@@ -16,7 +16,7 @@ export function CandidateInfo() {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const candidateInfo = await axios.get<ICandidateInfo>('http://localhost:8080/api/v1/form/' + id, {headers: {"Authorization": `Bearer ${token}`}});
+            const candidateInfo = await axios.get<ICandidateInfo>('http://90.156.229.82:8080/api/v1/form/' + id, {headers: {"Authorization": `Bearer ${token}`}});
 
             setInfo(candidateInfo.data);
             setLoading(false);
@@ -38,10 +38,10 @@ export function CandidateInfo() {
     async function givePermission(){
         const token = localStorage.getItem('token');
         try {
-            const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользьзователю " +info?.user_info.firstname+" "+info?.user_info.lastname+"?");
+            const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользьзователю " +info?.user_info.firstname+" "+info?.user_info.lastname+"?");// eslint-disable-line no-restricted-globals
             if(isConfirm){
                 setLoading(true);
-                const permission = await axios.put('http://localhost:8080/api/v1/user/' + id,{} ,{headers: {"Authorization": `Bearer ${token}`}});
+                const permission = await axios.put('http://90.156.229.82:8080/api/v1/user/' + id,{} ,{headers: {"Authorization": `Bearer ${token}`}});
                 setLoading(false);
 
             }

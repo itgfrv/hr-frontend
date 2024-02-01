@@ -12,7 +12,7 @@ export function useCandidates() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.get<ICandidate[]>('http://localhost:8080/api/v1/form',{headers: {"Authorization": `Bearer ${token}`}});
+            const response = await axios.get<ICandidate[]>('http://90.156.229.82:8080/api/v1/form',{headers: {"Authorization": `Bearer ${token}`}});
             setCandidates(response.data);
             setLoading(false);
         } catch (e: unknown) {
