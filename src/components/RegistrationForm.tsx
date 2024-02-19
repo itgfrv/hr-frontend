@@ -1,4 +1,4 @@
-import React, {useState, ChangeEvent, FormEvent} from 'react';
+import React, {useState, ChangeEvent, FormEvent, useEffect} from 'react';
 import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 import logo from "../images/logo.png";
@@ -12,6 +12,7 @@ interface RegistrationForm {
 }
 
 export function RegistrationForm() {
+    const EMAIL_REGEXP=/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
     const navigation = useNavigate();
     const [formData, setFormData] = useState<RegistrationForm>({
         firstName: '',
@@ -22,12 +23,13 @@ export function RegistrationForm() {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('')
+    const [validated,setValidated] = useState(false);
 
     async function fetchRegistration() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.post('http://80.68.156.54:8080/api/v1/auth/register', {
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/auth/register`, {
                 firstname: formData.firstName,
                 lastname: formData.lastName,
                 email: formData.email,
@@ -49,11 +51,27 @@ export function RegistrationForm() {
     }
 
     function validateForm() {
-        if (formData.password !== formData.confirmPassword) {
+        const email: boolean = EMAIL_REGEXP.test(formData.email);
+        const firstname: boolean = formData.firstName == "";
+        const lastname: boolean = formData.lastName == "";
+        const password: boolean = formData.password !== formData.confirmPassword;
+        if (!email) {
+            setError('евалидный email')
+            setValidated(false)
+            return false;
+        }else if (firstname){
             setError('Пароли не совпадают')
+            setValidated(false)
+            return false;
+        }
+        else if (lastname){}
+        else if(password){
+            setError('Пароли не совпадают')
+            setValidated(false)
             return false;
         } else {
             setError('')
+            setValidated(true)
             return true;
         }
     }
@@ -65,7 +83,6 @@ export function RegistrationForm() {
             [name]: value,
         }));
     };
-
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -156,13 +173,15 @@ export function RegistrationForm() {
                         />
                     </div>
                     <div className="flex justify-center">
-                        <button
-                            className="w-48 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                        >
-                            Зарегистрироваться
-                        </button>
+                            <button
+                                className="disabled w-48 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit"
+                            >
+                                Зарегистрироваться
+                            </button>
+
                     </div>
+                    <p className="text-xs text-center">Нажимая на кнопку "Зарегистрироваться", Вы даете согласие на обработку персональных данных и соглашаетесь с <a href="https://www.zatvor.ru/files/processing-policy-zatvor.pdf" target="_blank" className="text-blue-500 hover:text-blue-700 text underline">условиями обработки персональных данных</a></p>
                     {loading && <p>Загрузка</p>}
                     {error && <span className={"text-red-500"}>{error}</span>}
                 </form>

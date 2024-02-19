@@ -2,15 +2,11 @@ import React, {useState, ChangeEvent, FormEvent} from 'react';
 import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
 import logo from "../images/logo.png";
-
-interface AuthForm {
-    email: string;
-    password: string;
-}
+import {IAuthForm} from "../models";
 
 export function AuthForm() {
     const navigation = useNavigate();
-    const [formData, setFormData] = useState<AuthForm>({
+    const [formData, setFormData] = useState<IAuthForm>({
         email: '',
         password: '',
     });
@@ -21,7 +17,7 @@ export function AuthForm() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.post('http://80.68.156.54:8080/api/v1/auth/authenticate', {
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/auth/authenticate`, {
                 email: formData.email,
                 password: formData.password
             }, {
@@ -42,7 +38,6 @@ export function AuthForm() {
             setLoading(false);
             setError(error.message);
         }
-
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

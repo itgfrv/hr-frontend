@@ -20,7 +20,9 @@ export function Result({result}:ResultProps) {
                     {r.question_type}: {r.current_result} из {r.max_result}
                 </li>)
             )}
+                <li className="font-bold">Всего: {result.map(r=>r.current_result).reduce((a, b) => a + b, 0)} из {result.map(r=>r.max_result).reduce((a, b) => a + b, 0)}</li>
             </ul>
+
             <p className="text-gray-700">
                 Спасибо за прохождение теста, ожидайте ответа!
             </p>

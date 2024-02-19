@@ -8,30 +8,32 @@ import {AxiosError} from "axios/index";
 
 interface ITaskStatus {
     resume: boolean,
+    is_resume_done:boolean,
     demo: boolean,
+    is_demo_done:boolean,
     interview: boolean
+    is_interview_done:boolean
 }
 
 export function Cabinet() {
-    const [status, setStatus] = useState({resume: false, demo: false, interview: false});
+    const [status, setStatus] = useState({resume: false,is_resume_done:false, demo: false,is_demo_done:false, interview: false, is_interview_done:false});
     const [loading,setLoading]  = useState<boolean>(false);
     const [error,setError]  = useState<string>('');
     let role:string="USER";
-    if (!localStorage.getItem('user')){
-        let role:string="USER";
-    }else {
+    if (localStorage.getItem('user')) {
         const userDataString = localStorage.getItem("user");
         if (userDataString !== null) {
-            role= JSON.parse(userDataString).role;
+            role = JSON.parse(userDataString).role;
         }
     }
+
     async function getTaskStatus() {
         const token = localStorage.getItem('token');
         if(token){
             try{
                 setError('');
                 setLoading(true)
-                const response = await axios.get<ITaskStatus>("http://80.68.156.54:8080/api/v1/form/task-info", {headers: {"Authorization": `Bearer ${token}`}})
+                const response = await axios.get<ITaskStatus>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/task-info`, {headers: {"Authorization": `Bearer ${token}`}})
                 setStatus(response.data);
                 setLoading(false)
             } catch (e: unknown) {
@@ -55,24 +57,24 @@ export function Cabinet() {
             <div className="flex justify-center">
                 {role === "USER" ? (
                     <div className="w-3/4  bg-center flex justify-center">
-                        <Task title={"Анкета"} idValue={1} isModal={false}
+                        <Task title={"Анкета"} idValue={1}
                               description={"Не стестняйтесь рассказывать о своем опыте, потому что анкета влияется на итоговый результат"}
                               redirect={"/resume"}
-                              buttonTitle={"RJYYY"} isPossible={status.resume}/>
-                        <Task title={"Демо тест"} idValue={1} isModal={false}
+                              buttonTitle={"RJYYY"} isPossible={status.resume} isDone={status.is_resume_done}/>
+                        <Task title={"Демо тест"} idValue={1}
                               description={"Для того, чтобы пройти демо-тест необходимо отправить анкету на проверку"}
                               redirect={"/quiz/1"}
-                              buttonTitle={"RJYYY"} isPossible={status.demo}/>
-                        <Task title={"Финальный тест"} idValue={1} isModal={false}
+                              buttonTitle={"RJYYY"} isPossible={status.demo} isDone={status.is_demo_done}/>
+                        <Task title={"Финальный тест"} idValue={1}
                               description={"Для того, чтобы пройти финальный тест необходимо, чтобы работодатель проверил анкету"}
                               redirect={"/quiz/2"}
-                              buttonTitle={"RJYYY"} isPossible={status.interview}/>
+                              buttonTitle={"RJYYY"} isPossible={status.interview} isDone={status.is_interview_done}/>
                     </div>
                 ) : (
-                    <Task title={"Просмотр кандидатов"} idValue={1} isModal={false}
-                          description={"Просмотреть список кандилатов"}
+                    <Task title={"Просмотр кандидатов"} idValue={1}
+                          description={"Просмотреть список кандидатов"}
                           redirect={"/candidates"}
-                          buttonTitle={"RJYYY"} isPossible={true}/>
+                          buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
                 )}
             </div>
         </div>

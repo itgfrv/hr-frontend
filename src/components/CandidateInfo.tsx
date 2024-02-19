@@ -16,7 +16,7 @@ export function CandidateInfo() {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const candidateInfo = await axios.get<ICandidateInfo>('http://80.68.156.54:8080/api/v1/form/' + id, {headers: {"Authorization": `Bearer ${token}`}});
+            const candidateInfo = await axios.get<ICandidateInfo>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/` + id, {headers: {"Authorization": `Bearer ${token}`}});
 
             setInfo(candidateInfo.data);
             setLoading(false);
@@ -35,19 +35,12 @@ export function CandidateInfo() {
         const ans: string = a ? a.answer_body : '';
         return ans;
     }
-    function msToHoursMinutesSecondsString(ms:number) {
-        // Преобразуем миллисекунды в секунды
+    function msToHoursMinutesSecondsString(ms:number): string{
         let seconds = Math.floor(ms / 1000);
-        // Вычисляем количество часов
         let hours = Math.floor(seconds / 3600);
-        // Оставшиеся секунды после вычета часов
         seconds %= 3600;
-        // Вычисляем количество минут
         let minutes = Math.floor(seconds / 60);
-        // Оставшиеся секунды после вычета минут
         seconds %= 60;
-
-        // Форматируем строку для вывода
         let timeString = '';
         if (hours > 0) {
             timeString += hours + ' часов ';
@@ -67,7 +60,7 @@ export function CandidateInfo() {
             const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользьзователю " +info?.user_info.firstname+" "+info?.user_info.lastname+"?");// eslint-disable-line no-restricted-globals
             if(isConfirm){
                 setLoading(true);
-                const permission = await axios.put('http://80.68.156.54:8080/api/v1/user/' + id,{} ,{headers: {"Authorization": `Bearer ${token}`}});
+                const permission = await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id,{} ,{headers: {"Authorization": `Bearer ${token}`}});
                 setLoading(false);
 
             }

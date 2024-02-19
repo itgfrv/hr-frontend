@@ -11,10 +11,10 @@ import {Cabinet} from "./components/Cabinet";
 import {Quiz} from "./components/Quiz";
 import {CandidatePage} from "./components/CandidatePage";
 import {CandidateInfo} from "./components/CandidateInfo";
+import {FileLoader} from "./components/FileLoader";
 
 
 function App() {
-
     return (
 
         <BrowserRouter>
@@ -27,6 +27,8 @@ function App() {
                 <Route path="/quiz/:id" element={<Quiz/>}/>
                 <Route path="/candidates" element={<CandidatePage/>}/>
                 <Route path="/candidates/:id" element={<CandidateInfo/>}/>
+                <Route path="/file" element={<FileLoader/>}/>
+
             </Routes>
         </BrowserRouter>
 
