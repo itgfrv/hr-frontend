@@ -14,7 +14,7 @@ export function Header() {
 
     async function setUserInfo(token: string) {
         const data = await axios.get<IUser>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/personal`, {headers: {"Authorization": `Bearer ${token}`}});
-        console.log(data.data);
+
         localStorage.setItem('user', JSON.stringify(data.data));
     }
 

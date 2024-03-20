@@ -6,6 +6,10 @@ export interface ICandidate {
     activity: string,
     email: string
 }
+export interface IAttempt{
+    id:number,
+    is_done: boolean
+}
 
 export interface FormData {
     questions: { question: string; question_id: number }[];

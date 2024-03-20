@@ -3,11 +3,14 @@ import {Loader} from "./Loader";
 import {ErrorMessage} from "./ErrorMessage";
 import React, {ChangeEvent, useEffect, useState} from "react";
 import axios, {AxiosError} from "axios";
-import {useNavigate} from "react-router-dom";
-interface FileRequest{
+import {useNavigate, useParams} from "react-router-dom";
+
+interface FileRequest {
     file: FormData
 }
+
 export function FileLoader() {
+    const {id} = useParams();
     const navigation = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
@@ -22,15 +25,20 @@ export function FileLoader() {
                 selectedFile.forEach((file) => {
                     formData.append(`file`, file);
                 });
-                const data = await axios.post<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/hw/load`,formData , {
-                    headers:
-                        {
-                            'Content-Type':
-                                'multipart/form-data',
-                        }
-                });
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const data = await axios.post<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/load/${id}`, formData, {
+                        headers:
+                            {
+                                'Content-Type':
+                                    'multipart/form-data',
+                                "Authorization": `Bearer ${token}`
+                            }
+                    });
+                }
             }
             setLoading(false);
+            navigation('/case-task')
         } catch (e: unknown) {
             const error = e as AxiosError;
             setLoading(false);
@@ -59,11 +67,12 @@ export function FileLoader() {
     return (
         <>
             <Header/>
-            <div className="max-w-md mx-auto">
+
+            <div className="max-w-md mx-auto content-center">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label htmlFor="file" className="block text-sm font-medium text-gray-700">
-                            Choose a file:
+                        <label htmlFor="file" className="block text-sm font-medium text-gray-700 text-center">
+                            Выберете сразу все файлы
                         </label>
                         <input
                             type="file"
@@ -76,9 +85,9 @@ export function FileLoader() {
                     </div>
                     <button
                         type="submit"
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="inline-flex justify-center  px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Upload
+                        Отправить
                     </button>
                 </form>
             </div>

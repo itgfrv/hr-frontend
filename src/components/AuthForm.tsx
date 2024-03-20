@@ -25,7 +25,7 @@ export function AuthForm() {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response.data.token);
+
             localStorage.setItem('token', response.data.token);
             setLoading(false);
             setFormData({

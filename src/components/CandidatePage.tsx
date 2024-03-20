@@ -1,16 +1,63 @@
-import {useCandidates} from "../hooks/candidates";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {ErrorMessage} from "./ErrorMessage";
 import {Loader} from "./Loader";
 import {Candidate} from "./Candidate";
 import {Header} from "./Header";
+import {ICandidate} from "../models";
+import axios, {AxiosError} from "axios";
 
 export function CandidatePage() {
-    const {candidates, loading, error} = useCandidates();
+    const [choice, setChoice] = useState("USER");
+    const [candidates, setCandidates] = useState<ICandidate[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        async function fetchCandidates() {
+            const token = localStorage.getItem('token');
+            try {
+                setError('')
+                setLoading(true);
+                const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form?role=`+choice, {headers: {"Authorization": `Bearer ${token}`}});
+                setCandidates(response.data);
+                setLoading(false);
+            } catch (e: unknown) {
+                const error = e as AxiosError;
+                setLoading(false);
+                setError(error.message);
+            }
+        }
+
+        fetchCandidates();
+    }, [choice]);
 
     return (
         <>
             <Header/>
+            {(choice === "USER") ?
+                (<div className="m-2 flex justify-center">
+                    СОИСКАТЕЛИ
+                </div>) : (choice === "EMPLOYEE") ? (<div className="m-2 flex justify-center">
+                    СОТРУДНИКИ
+                </div>) : (<div className="m-2 flex justify-center">
+                    ОТКАЗ
+                </div>)
+
+            }
+            <div className={"m-2 flex justify-center"}>
+                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                    setChoice("EMPLOYEE")
+                }}>Сотрудники
+                </button>
+                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"} onClick={() => {
+                    setChoice("REJECT")
+                }}>Отказ
+                </button>
+                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"} onClick={() => {
+                    setChoice("USER")
+                }}>Соискатели
+                </button>
+            </div>
             <div className={"container mx-auto max-w-2xl pt-5"}>
                 {loading && <Loader/>}
                 {error && <ErrorMessage error={error}/>}

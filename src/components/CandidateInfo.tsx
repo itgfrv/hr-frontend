@@ -1,14 +1,16 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Header} from "./Header";
 import {useEffect, useState} from "react";
-import {ICandidateInfo} from "../models";
+import {IAttempt, ICandidateInfo} from "../models";
 import axios, {AxiosError} from "axios";
 
 
 export function CandidateInfo() {
     const {id} = useParams();
+    const navigator = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [info, setInfo] = useState<ICandidateInfo>();
+    const [attempts, setAttempts] = useState<IAttempt[]>([]);
     const [error, setError] = useState<string>('');
 
 
@@ -20,22 +22,52 @@ export function CandidateInfo() {
 
             setInfo(candidateInfo.data);
             setLoading(false);
-            console.log(candidateInfo.data);
+
         } catch (e: unknown) {
             const error = e as AxiosError;
             setLoading(false);
             setError(error.message);
         }
+    }
 
+    async function getUserAttempts() {
+        const token = localStorage.getItem('token');
+        try {
+            setLoading(true);
+            const attemptInfo = await axios.get<IAttempt[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts/` + id, {headers: {"Authorization": `Bearer ${token}`}});
+            setAttempts(attemptInfo.data);
+            setLoading(false);
 
+        } catch (e: unknown) {
+            const error = e as AxiosError;
+            setLoading(false);
+            setError(error.message);
+        }
     }
 
     function getAnswer(index: number, answ: { question_id: number; answer_body: string }[]) {
         const a = answ.find((a) => a.question_id === index);
-        const ans: string = a ? a.answer_body : '';
-        return ans;
+        return a ? a.answer_body : '';
     }
-    function msToHoursMinutesSecondsString(ms:number): string{
+
+    async function changeRole(role: string) {
+        const token = localStorage.getItem('token');
+        try {
+            const isConfirm = confirm("Вы хотите выдать роль " + role + " пользьзователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
+            if (isConfirm) {
+                setLoading(true);
+                const permission = await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id + "/" + role, {}, {headers: {"Authorization": `Bearer ${token}`}});
+                setLoading(false);
+            }
+
+        } catch (e: unknown) {
+            const error = e as AxiosError;
+            setLoading(false);
+            setError(error.message);
+        }
+    }
+
+    function msToHoursMinutesSecondsString(ms: number): string {
         let seconds = Math.floor(ms / 1000);
         let hours = Math.floor(seconds / 3600);
         seconds %= 3600;
@@ -54,13 +86,13 @@ export function CandidateInfo() {
         return timeString.trim();
     }
 
-    async function givePermission(){
+    async function givePermission() {
         const token = localStorage.getItem('token');
         try {
-            const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользьзователю " +info?.user_info.firstname+" "+info?.user_info.lastname+"?");// eslint-disable-line no-restricted-globals
-            if(isConfirm){
+            const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользьзователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
+            if (isConfirm) {
                 setLoading(true);
-                const permission = await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id,{} ,{headers: {"Authorization": `Bearer ${token}`}});
+                const permission = await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id, {}, {headers: {"Authorization": `Bearer ${token}`}});
                 setLoading(false);
 
             }
@@ -75,6 +107,7 @@ export function CandidateInfo() {
 
     useEffect(() => {
         getInfo();
+        getUserAttempts();
     }, [])
     return (
         <>
@@ -133,6 +166,10 @@ export function CandidateInfo() {
                                             • {r.question_type}: {r.current_result} из {r.max_result}
                                         </li>)
                                     )}
+                                    <li className="font-bold">
+                                        Всего: {result.result.map(r => r.current_result).reduce((a, b) => a + b, 0)}
+                                        из {result.result.map(r => r.max_result).reduce((a, b) => a + b, 0)}
+                                    </li>
                                 </ul>
                                 <span>
                                     • Потрачено времени:{msToHoursMinutesSecondsString(result.duration)}
@@ -143,13 +180,47 @@ export function CandidateInfo() {
                     )
                     }
                 </div>
+                <div className={"m-2"}>
+                    <h1 className="text-center font-bold">
+                        Чертежное задание
+                    </h1>
+                    <table className="w-full">
+                        <thead>
+                        <tr className="bg-gray-100">
+                            <th className="text-left py-2 px-4">Попытка</th>
+                            <th className="text-left py-2 px-4">Статус</th>
+                            <th className="text-left py-2 px-4"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {attempts?.map((attempt, index) => (
+                            <tr key={attempt.id} className="border-b">
+                                <td className="text-left py-2 px-4">{index + 1}</td>
+                                <td className="text-left py-2 px-4">{attempt.is_done ? 'Отправлена' : 'Не сдана'}</td>
+                                <td className="text-left py-2 px-4">{attempt.is_done ? '' : (<button
+                                    className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2"
+                                    onClick={()=>navigator(`/case-task/check/${attempt.id}`, {replace: false})}>Перейти</button>)}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
                 <div className={"m-2 flex justify-center"}>
                     <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
                         givePermission()
                     }}>Выдать доступ к финальному тесту
                     </button>
                 </div>
-
+                <div className={"m-2 flex justify-center"}>
+                    <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                        changeRole("EMPLOYEE")
+                    }}>Сделать сотрудником
+                    </button>
+                    <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"} onClick={() => {
+                        changeRole("REJECT")
+                    }}>Отказ
+                    </button>
+                </div>
             </div>
         </>
     );

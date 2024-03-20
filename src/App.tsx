@@ -12,6 +12,8 @@ import {Quiz} from "./components/Quiz";
 import {CandidatePage} from "./components/CandidatePage";
 import {CandidateInfo} from "./components/CandidateInfo";
 import {FileLoader} from "./components/FileLoader";
+import {CaseTask} from "./components/CaseTask";
+import {CriteriaForm} from "./components/CriteriaForm";
 
 
 function App() {
@@ -27,8 +29,9 @@ function App() {
                 <Route path="/quiz/:id" element={<Quiz/>}/>
                 <Route path="/candidates" element={<CandidatePage/>}/>
                 <Route path="/candidates/:id" element={<CandidateInfo/>}/>
-                <Route path="/file" element={<FileLoader/>}/>
-
+                <Route path="/file/upload/:id" element={<FileLoader/>}/>
+                <Route path="/case-task" element={<CaseTask/>}/>
+                <Route path="/case-task/check/:id" element={<CriteriaForm/>}/>
             </Routes>
         </BrowserRouter>
 

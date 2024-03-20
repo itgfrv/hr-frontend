@@ -4,7 +4,7 @@ import {Header} from "./Header";
 import axios from "axios";
 import {Loader} from "./Loader";
 import {ErrorMessage} from "./ErrorMessage";
-import {AxiosError} from "axios/index";
+import {AxiosError} from "axios";
 
 interface ITaskStatus {
     resume: boolean,
@@ -55,7 +55,7 @@ export function Cabinet() {
             {loading&&<Loader/>}
             {error&&<ErrorMessage error={error}/>}
             <div className="flex justify-center">
-                {role === "USER" ? (
+                {(role === "USER"|| role ==="EMPLOYEE"|| role==="REJECT")? (
                     <div className="w-3/4  bg-center flex justify-center">
                         <Task title={"Анкета"} idValue={1}
                               description={"Не стестняйтесь рассказывать о своем опыте, потому что анкета влияется на итоговый результат"}
@@ -69,6 +69,10 @@ export function Cabinet() {
                               description={"Для того, чтобы пройти финальный тест необходимо, чтобы работодатель проверил анкету"}
                               redirect={"/quiz/2"}
                               buttonTitle={"RJYYY"} isPossible={status.interview} isDone={status.is_interview_done}/>
+                        <Task title={"Чертежное задание"} idValue={1}
+                              description={"Для того, чтобы пройти чертежное задание необходимо, чтобы работодатель проверил анкету"}
+                              redirect={"/case-task"}
+                              buttonTitle={"RJYYY"} isPossible={true} isDone={status.is_interview_done}/>
                     </div>
                 ) : (
                     <Task title={"Просмотр кандидатов"} idValue={1}

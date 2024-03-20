@@ -75,7 +75,7 @@ export function Quiz() {
             setQuiz(null)
             setTimer(false);
             setResult(resultData.data);
-            console.log(resultData.data);
+
             setLoading(false);
 
         } catch (e: unknown) {
