@@ -1,5 +1,5 @@
 import React from 'react';
-import {ICandidate} from "../models";
+import {ICandidate} from "../../models";
 import {useNavigate} from "react-router-dom";
 
 interface CandidateProps {

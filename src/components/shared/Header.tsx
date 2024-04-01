@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router-dom";
-import logo from "../images/logo.png";
+import logo from "../../images/logo.png";
 import React, {useState} from "react";
 import axios from "axios";
-import {IUser} from "../models";
+import {IUser} from "../../models";
 
 
 export function Header() {

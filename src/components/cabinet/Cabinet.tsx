@@ -1,9 +1,9 @@
 import {Task} from "./Task";
 import React, {useEffect, useState} from "react";
-import {Header} from "./Header";
+import {Header} from "../shared/Header";
 import axios from "axios";
-import {Loader} from "./Loader";
-import {ErrorMessage} from "./ErrorMessage";
+import {Loader} from "../shared/Loader";
+import {ErrorMessage} from "../shared/ErrorMessage";
 import {AxiosError} from "axios";
 
 interface ITaskStatus {
@@ -11,12 +11,13 @@ interface ITaskStatus {
     is_resume_done:boolean,
     demo: boolean,
     is_demo_done:boolean,
-    interview: boolean
-    is_interview_done:boolean
+    interview: boolean,
+    is_interview_done:boolean,
+    caseStudy: boolean
 }
 
 export function Cabinet() {
-    const [status, setStatus] = useState({resume: false,is_resume_done:false, demo: false,is_demo_done:false, interview: false, is_interview_done:false});
+    const [status, setStatus] = useState({resume: false,is_resume_done:false, demo: false,is_demo_done:false, interview: false, is_interview_done:false, caseStudy: false});
     const [loading,setLoading]  = useState<boolean>(false);
     const [error,setError]  = useState<string>('');
     let role:string="USER";
@@ -34,6 +35,7 @@ export function Cabinet() {
                 setError('');
                 setLoading(true)
                 const response = await axios.get<ITaskStatus>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/task-info`, {headers: {"Authorization": `Bearer ${token}`}})
+                console.log(response.data)
                 setStatus(response.data);
                 setLoading(false)
             } catch (e: unknown) {
@@ -72,7 +74,7 @@ export function Cabinet() {
                         <Task title={"Чертежное задание"} idValue={1}
                               description={"Для того, чтобы пройти чертежное задание необходимо, чтобы работодатель проверил анкету"}
                               redirect={"/case-task"}
-                              buttonTitle={"RJYYY"} isPossible={true} isDone={status.is_interview_done}/>
+                              buttonTitle={"RJYYY"} isPossible={status.caseStudy} isDone={false}/>
                     </div>
                 ) : (
                     <Task title={"Просмотр кандидатов"} idValue={1}

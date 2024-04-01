@@ -1,8 +1,8 @@
 import React, {useState, ChangeEvent, FormEvent} from 'react';
 import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
-import logo from "../images/logo.png";
-import {IAuthForm} from "../models";
+import logo from "../../images/logo.png";
+import {IAuthForm} from "../../models";
 
 export function AuthForm() {
     const navigation = useNavigate();

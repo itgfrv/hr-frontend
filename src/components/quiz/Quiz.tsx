@@ -1,11 +1,11 @@
 import {QuizCard} from "./QuizCard";
-import {Header} from "./Header";
+import {Header} from "../shared/Header";
 import {useEffect, useState} from "react";
 import axios, {AxiosError} from "axios";
 import {useParams} from "react-router-dom";
 import {Result} from "./Result";
-import {Loader} from "./Loader";
-import {ErrorMessage} from "./ErrorMessage";
+import {Loader} from "../shared/Loader";
+import {ErrorMessage} from "../shared/ErrorMessage";
 
 
 interface Quiz {

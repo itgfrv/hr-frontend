@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {Header} from "./Header";
+import {Header} from "../shared/Header";
 import {useEffect, useState} from "react";
-import {IAttempt, ICandidateInfo} from "../models";
+import {IAttempt, ICandidateInfo} from "../../models";
 import axios, {AxiosError} from "axios";
 
 
@@ -104,6 +104,24 @@ export function CandidateInfo() {
         }
 
     }
+    async function addCaseTaskAttempt() {
+        const token = localStorage.getItem('token');
+        try {
+            const isConfirm = confirm("Вы хотите выдать доступ к чертежному заданию пользователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
+            if (isConfirm) {
+                setLoading(true);
+                const permission = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts/add/` + id, {}, {headers: {"Authorization": `Bearer ${token}`}});
+                setLoading(false);
+
+            }
+
+        } catch (e: unknown) {
+            const error = e as AxiosError;
+            setLoading(false);
+            setError(error.message);
+        }
+
+    }
 
     useEffect(() => {
         getInfo();
@@ -132,6 +150,17 @@ export function CandidateInfo() {
                         </div>
 
                     )}
+                    <div className={"m-2 flex justify-center"}>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                            changeRole("EMPLOYEE")
+                        }}>Сделать сотрудником
+                        </button>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"}
+                                onClick={() => {
+                                    changeRole("REJECT")
+                                }}>Отказ
+                        </button>
+                    </div>
                 </div>
                 <div className={"m-4"}>
                     <h1 className="text-center font-bold">
@@ -179,6 +208,12 @@ export function CandidateInfo() {
                         )
                     )
                     }
+                    <div className={"m-2 flex justify-center"}>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                            givePermission()
+                        }}>Выдать доступ к финальному тесту
+                        </button>
+                    </div>
                 </div>
                 <div className={"m-2"}>
                     <h1 className="text-center font-bold">
@@ -187,7 +222,7 @@ export function CandidateInfo() {
                     <table className="w-full">
                         <thead>
                         <tr className="bg-gray-100">
-                            <th className="text-left py-2 px-4">Попытка</th>
+                        <th className="text-left py-2 px-4">Попытка</th>
                             <th className="text-left py-2 px-4">Статус</th>
                             <th className="text-left py-2 px-4"></th>
                         </tr>
@@ -199,27 +234,17 @@ export function CandidateInfo() {
                                 <td className="text-left py-2 px-4">{attempt.is_done ? 'Отправлена' : 'Не сдана'}</td>
                                 <td className="text-left py-2 px-4">{attempt.is_done ? '' : (<button
                                     className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2"
-                                    onClick={()=>navigator(`/case-task/check/${attempt.id}`, {replace: false})}>Перейти</button>)}</td>
+                                    onClick={() => navigator(`/case-task/check/${attempt.id}`, {replace: false})}>Перейти</button>)}</td>
                             </tr>
                         ))}
                         </tbody>
                     </table>
-                </div>
-                <div className={"m-2 flex justify-center"}>
-                    <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
-                        givePermission()
-                    }}>Выдать доступ к финальному тесту
-                    </button>
-                </div>
-                <div className={"m-2 flex justify-center"}>
-                    <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
-                        changeRole("EMPLOYEE")
-                    }}>Сделать сотрудником
-                    </button>
-                    <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"} onClick={() => {
-                        changeRole("REJECT")
-                    }}>Отказ
-                    </button>
+                    <div className={"m-2 flex justify-center"}>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                            addCaseTaskAttempt()
+                        }}>Выдать доступ к чертежному заданию
+                        </button>
+                    </div>
                 </div>
             </div>
         </>

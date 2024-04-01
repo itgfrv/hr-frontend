@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import axios, {AxiosError} from "axios";
 import {useNavigate} from "react-router-dom";
-import {Header} from "./Header";
-import {Loader} from "./Loader";
-import {ErrorMessage} from "./ErrorMessage";
+import {Header} from "../shared/Header";
+import {Loader} from "../shared/Loader";
+import {ErrorMessage} from "../shared/ErrorMessage";
 
 interface FormData {
     questions: { question: string; question_id: number }[];

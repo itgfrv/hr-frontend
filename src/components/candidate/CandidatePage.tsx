@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {ErrorMessage} from "./ErrorMessage";
-import {Loader} from "./Loader";
+import {ErrorMessage} from "../shared/ErrorMessage";
+import {Loader} from "../shared/Loader";
 import {Candidate} from "./Candidate";
-import {Header} from "./Header";
-import {ICandidate} from "../models";
+import {Header} from "../shared/Header";
+import {ICandidate} from "../../models";
 import axios, {AxiosError} from "axios";
 
 export function CandidatePage() {

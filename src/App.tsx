@@ -1,19 +1,19 @@
 import React from 'react';
 import {useCandidates} from "./hooks/candidates";
-import {FormComponent} from "./components/FormComponent";
-import {RegistrationForm} from "./components/RegistrationForm";
+import {FormComponent} from "./components/survey/FormComponent";
+import {RegistrationForm} from "./components/authentication/RegistrationForm";
 import {formData} from "./data/resume";
-import {AuthForm} from "./components/AuthForm";
+import {AuthForm} from "./components/authentication/AuthForm";
 import {MainPage} from "./components/MainPage";
-import {Task} from "./components/Task"
+import {Task} from "./components/cabinet/Task"
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {Cabinet} from "./components/Cabinet";
-import {Quiz} from "./components/Quiz";
-import {CandidatePage} from "./components/CandidatePage";
-import {CandidateInfo} from "./components/CandidateInfo";
-import {FileLoader} from "./components/FileLoader";
-import {CaseTask} from "./components/CaseTask";
-import {CriteriaForm} from "./components/CriteriaForm";
+import {Cabinet} from "./components/cabinet/Cabinet";
+import {Quiz} from "./components/quiz/Quiz";
+import {CandidatePage} from "./components/candidate/CandidatePage";
+import {CandidateInfo} from "./components/candidate/CandidateInfo";
+import {FileLoader} from "./components/caseStudy/FileLoader";
+import {CaseTask} from "./components/caseStudy/CaseTask";
+import {CriteriaForm} from "./components/caseStudy/CriteriaForm";
 
 
 function App() {

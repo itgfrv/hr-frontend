@@ -1,4 +1,4 @@
-import {Header} from "./Header";
+import {Header} from "../shared/Header";
 import axios from "axios";
 import {AxiosError} from "axios";
 import {useEffect, useState} from "react";
