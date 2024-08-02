@@ -41,6 +41,7 @@ export interface ICandidateInfo {
     resume: FormData,
     quiz_result: [
         {
+            userResult: number,
             type: string,
             result: IResult[],
             duration: number

@@ -14,6 +14,7 @@ import {CandidateInfo} from "./components/candidate/CandidateInfo";
 import {FileLoader} from "./components/caseStudy/FileLoader";
 import {CaseTask} from "./components/caseStudy/CaseTask";
 import {CriteriaForm} from "./components/caseStudy/CriteriaForm";
+import {QuizResult} from "./components/quiz/QuizResult";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/file/upload/:id" element={<FileLoader/>}/>
                 <Route path="/case-task" element={<CaseTask/>}/>
                 <Route path="/case-task/check/:id" element={<CriteriaForm/>}/>
+                <Route path="/result/:id" element={<QuizResult/>} />
             </Routes>
         </BrowserRouter>
 
