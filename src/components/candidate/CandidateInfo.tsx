@@ -213,10 +213,19 @@ export function CandidateInfo() {
                                     Всего: {result.result.map(r => r.current_result).reduce((a, b) => a + b, 0)} из {result.result.map(r => r.max_result).reduce((a, b) => a + b, 0)}
                                 </li>
                                 <li> • Потрачено времени: {msToHoursMinutesSecondsString(result.duration)}</li>
-                                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => navigator(`/result/${result.userResult}`, { replace: false })}> Результат теста</button>
+                                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"}
+                                        onClick={() => navigator(`/result/${result.userResult}`, {replace: false})}> Результат
+                                    теста
+                                </button>
                             </ul>
                         </div>
                     ))}
+                    <div className={"m-2 flex justify-center"}>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                            givePermission()
+                        }}>Выдать доступ к финальному тесту
+                        </button>
+                    </div>
                 </div>
                 <div className={"m-2"}>
                     <h1 className="text-center font-bold">Комментарии</h1>
