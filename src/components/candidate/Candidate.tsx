@@ -8,14 +8,19 @@ interface CandidateProps {
 
 export function Candidate(props: CandidateProps) {
     const navigator = useNavigate();
-
+    let date;
+    if(props.candidate.lastActivityDate){
+        date = new Date(props.candidate.lastActivityDate);
+    }
     return (
         <div className={"border py-2 px-4 rounded flex flex-row items-center mb-2 justify-between"}
              onClick={() => console.log(props.candidate.activity)}>
             <div>
                 {props.candidate.firstname} {props.candidate.lastname}
                 <div className={"text-gray-700-500"}> {props.candidate.activity}</div>
+                {props.candidate.lastActivityDate&&(<div className={"text-gray-700-500"}>Дата выполнения задания {date?.toLocaleDateString()}</div>)}
             </div>
+
             <div>
                 <button className={"bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600"} onClick={() => {
                     navigator(`/candidates/${props.candidate.id}`, {replace: false});

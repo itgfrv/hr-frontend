@@ -3,6 +3,7 @@ import { Header } from "../shared/Header";
 import { useEffect, useState } from "react";
 import { IAttempt, ICandidateInfo } from "../../models";
 import axios, { AxiosError } from "axios";
+import UpdatePasswordForm from "./UpdatePasswordForm";
 
 interface IComment {
     content: string;
@@ -14,6 +15,7 @@ interface IComment {
 export function CandidateInfo() {
     const { id } = useParams();
     const navigator = useNavigate();
+    const [viewMode, setViewMode] = useState<'info' | 'changePassword'>('info'); // состояние для переключения между вкладками
     const [loading, setLoading] = useState<boolean>(false);
     const [info, setInfo] = useState<ICandidateInfo>();
     const [attempts, setAttempts] = useState<IAttempt[]>([]);
@@ -159,8 +161,25 @@ export function CandidateInfo() {
     return (
         <>
             <Header />
-            <div className={"max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-1 flex-col justify-center"}>
-                <div className={"m-4"}>
+            <div
+                className={"max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-1 flex-col justify-center"}>
+                <div className="flex justify-around border-b border-gray-200">
+                    <button
+                        className={`p-2 text-gray-700 font-semibold ${viewMode === 'info' ? 'border-b-2 border-red-500' : ''}`}
+                        onClick={() => setViewMode('info')}
+                    >
+                        Информация
+                    </button>
+                    <button
+                        className={`p-2 text-gray-700 font-semibold ${viewMode === 'changePassword' ? 'border-b-2 border-red-500' : ''}`}
+                        onClick={() => setViewMode('changePassword')}
+                    >
+                        Сменить пароль
+                    </button>
+                </div>
+                {viewMode === 'info' && (
+                    <div>
+                        <div className={"m-4"}>
                     <h1 className="text-center font-bold">Информация</h1>
                     {info && info.user_info && (
                         <div>
@@ -173,18 +192,27 @@ export function CandidateInfo() {
                             <div>
                                 <span className={"font-medium"}>Статус: </span>{info.user_info.activity}
                             </div>
+                            <div>
+                                <span className={"font-medium"}>Дата регистрации: </span>{new Date(info.user_info.createdDate).toLocaleDateString()}
+                            </div>
+                            <div>
+                                <span className={"font-medium"}>Дата последнего выполненого задания: </span>{new Date(info.user_info.lastActivityDate).toLocaleDateString()}
+                            </div>
                         </div>
                     )}
-                    <div className={"m-2 flex justify-center"}>
-                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
+                            <div className={"m-2 flex justify-center"}>
+                                <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"} onClick={() => {
                             changeRole("EMPLOYEE")
-                        }}>Сделать сотрудником</button>
-                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"} onClick={() => {
-                            changeRole("REJECT")
-                        }}>Отказ</button>
+                        }}>Сделать сотрудником
+                        </button>
+                        <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full ml-10"}
+                                onClick={() => {
+                                    changeRole("REJECT")
+                                }}>Отказ
+                        </button>
                     </div>
                 </div>
-                <div className={"m-4"}>
+                        <div className={"m-4"}>
                     <h1 className="text-center font-bold">Анкета</h1>
                     {info && info.resume &&
                         info.resume.questions.map((question, index) => (
@@ -198,7 +226,7 @@ export function CandidateInfo() {
                             </div>
                         ))}
                 </div>
-                <div className={"m-2"}>
+                        <div className={"m-2"}>
                     <h1 className="text-center font-bold">Результаты теста</h1>
                     {info && info.quiz_result.map((result) => (
                         <div>
@@ -227,12 +255,13 @@ export function CandidateInfo() {
                         </button>
                     </div>
                 </div>
-                <div className={"m-2"}>
+                        <div className={"m-2"}>
                     <h1 className="text-center font-bold">Комментарии</h1>
                     <div className="mb-4">
                         {comments.map((comment, index) => (
                             <div key={index} className="bg-gray-100 p-2 my-2 rounded">
-                                <p><strong>{comment.adminName} {comment.adminLastname}</strong> ({comment.adminEmail}):</p>
+                                <p><strong>{comment.adminName} {comment.adminLastname}</strong> ({comment.adminEmail}):
+                                </p>
                                 <p>{comment.content}</p>
                             </div>
                         ))}
@@ -252,6 +281,12 @@ export function CandidateInfo() {
                         </button>
                     </div>
                 </div>
+                    </div>)}
+                {viewMode === 'changePassword' && (
+                    <div className="m-4">
+                        <UpdatePasswordForm userId={Number(id)} />
+                    </div>
+                )}
             </div>
         </>
     );

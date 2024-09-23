@@ -4,7 +4,9 @@ export interface ICandidate {
     lastname: string,
     status: string,
     activity: string,
-    email: string
+    email: string,
+    createdDate: string,
+    lastActivityDate: string,
 }
 export interface IAttempt{
     id:number,
@@ -36,7 +38,9 @@ export interface ICandidateInfo {
         firstname: string,
         lastname: string,
         status: string,
-        activity: string
+        activity: string,
+        createdDate: string,
+        lastActivityDate: string,
     },
     resume: FormData,
     quiz_result: [
