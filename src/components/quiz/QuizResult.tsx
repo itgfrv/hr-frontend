@@ -3,7 +3,7 @@ import { Header } from "../shared/Header";
 import { Loader } from "../shared/Loader";
 import { ErrorMessage } from "../shared/ErrorMessage";
 import { QuizResultCard } from "./QuizResultCard";
-import {useParams} from "react-router-dom"; // Assume this is the previously defined QuizResult component
+import {useNavigate, useParams} from "react-router-dom"; // Assume this is the previously defined QuizResult component
 
 interface Answer {
     id: number;
@@ -29,6 +29,7 @@ interface QuizResultProps {
 }
 
 export function QuizResult() {
+    const navigator = useNavigate();
     const {id} = useParams();
     const [userAnswers, setUserAnswers] = useState<UserAnswerDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -61,8 +62,18 @@ export function QuizResult() {
             {error && <ErrorMessage error={error} />}
             {!loading && !error && (
                 <div className="quiz-results-list">
+                    <div className="flex justify-center p-2 ">
+                        <button onClick={() => navigator(-1)} className="flex items-center text-gray-700 font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                 fill="#5f6368">
+                                <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/>
+                            </svg>
+                            Назад
+                        </button>
+                    </div>
+
                     {userAnswers.map((userAnswerDto, index) => (
-                        <QuizResultCard key={index} userAnswerDto={userAnswerDto} />
+                        <QuizResultCard key={index} userAnswerDto={userAnswerDto}/>
                     ))}
                 </div>
             )}

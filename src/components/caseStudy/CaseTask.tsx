@@ -82,8 +82,33 @@ export function CaseTask() {
                         неработоспособность изделия в целом допускать нельзя.
                     </ul>
                 </p>
+                <details className="p-4 rounded mt-6">
+                    <summary className="cursor-pointer font-semibold text-lg">Критерии проверки</summary>
+                    <ul className="ml-6 mt-2 list-disc">
+                        <li>Указание масштаба.</li>
+                        <li>Расположение вида спереди в положении именно спереди, а не иным любым образом.</li>
+                        <li>Маркировка деталей (каждая имеет имя на листе, где ее изобразили).</li>
+                        <li>Ссылка на детали, четко указывающая где искать ту или иную деталь.</li>
+                        <li>Наличие всех внешних габаритов в сборе и для отдельных деталей.</li>
+                        <li>Наличие внутренних габаритов, достаточных для изготовления.</li>
+                        <li>Подбор артикулов крепежа обоснованной формы и материалов.</li>
+                        <li>Подбор подходящих материалов всех элементов петли, показ на чертеже штриховками.</li>
+                        <li>Легенда с указанием где какой предположен материал.</li>
+                        <li>Работа петли геометрически по скольжению.</li>
+                        <li>Работа петли геометрически по плоскостям приварки.</li>
+                        <li>Учет зазоров. Норма 0,2 мм.</li>
+                        <li>Показ мест расположения осей всех отверстий.</li>
+                        <li>Правильность размещения видов по осям и по плоскостям.</li>
+                        <li>Правильность обозначений ЕСКД шероховатости рабочих поверхностей. Норма 12 класс.</li>
+                        <li>Правильность обозначений ЕСКД фасок.</li>
+                        <li>Правильность обозначений ЕСКД резьб.</li>
+                        <li>Не пересечение размерных.</li>
+                        <li>Адаптация под лист А4 в масштабе.</li>
+                        <li>Читаемые толщины линий. Размерные 0,09, основные разных планов 0,15-0,3.</li>
+                    </ul>
+                </details>
                 {loading ? (
-                    <p className="text-center py-4">Загрузка файлов...</p>
+                    <p className="text-center py-4">Загрузка...</p>
                 ) : error ? (
                     <p className="text-center py-4 text-red-500">{error}</p>
                 ) : (
@@ -100,12 +125,21 @@ export function CaseTask() {
                             <tr key={attempt.id} className="border-b">
                                 <td className="text-left py-2 px-4">{index + 1}</td>
                                 <td className="text-left py-2 px-4">{attempt.status === 'NOT_DONE' ? 'Не сдана' : attempt.status === "DONE" ? "Сдана" : 'Проверена'}</td>
-                                <td className="text-left py-2 px-4">{attempt.status === 'NOT_DONE' ? (<button
-                                    className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2"
-                                    onClick={() => navigation(`/file/upload/${attempt.id}`, {replace: false})}>Перейти</button>) : attempt.status === 'CHECKED' ? (
-                                    <button
-                                        className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2"
-                                        onClick={() => navigation(`/file/upload/${attempt.id}`, {replace: false})}>Перейти</button>) : ''}</td>
+                                <td className="text-left py-2 px-4">
+                                    {attempt.status === 'NOT_DONE' ? (
+                                        <button
+                                            className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm text-white mr-2"
+                                            onClick={() => navigation(`/file/upload/${attempt.id}`, {replace: false})}>
+                                            Перейти
+                                        </button>
+                                    ) : attempt.status === 'CHECKED' ? (
+                                        <button
+                                            className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm text-white mr-2"
+                                            onClick={() => navigation(`/file/upload/${attempt.id}`, {replace: false})}>
+                                            Перейти
+                                        </button>
+                                    ) : ''}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
