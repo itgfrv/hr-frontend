@@ -23,7 +23,7 @@ export function Candidate(props: CandidateProps) {
 
             <div>
                 <button className={"bg-red-500 text-white py-1 px-2 rounded-full hover:bg-red-600"} onClick={() => {
-                    navigator(`/candidates/${props.candidate.id}`, {replace: false});
+                    navigator(`/candidates/${props.candidate.id}`);
                 }}> Подробнее
                 </button>
             </div>

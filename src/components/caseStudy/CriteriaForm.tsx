@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import {useNavigate, useParams} from "react-router-dom";
 import { Header } from "../shared/Header";
+import ErrorModal from "../common/ErrorModal";
 
 interface Criteria {
     criteriaId: number;
@@ -22,6 +23,12 @@ interface CaseStudyAttemptDTO {
     userId: number;
     status: string;
     files: FileDTO[];
+    marks:MarkDto[];
+}
+interface MarkDto {
+    mark: number;
+    comment: string;
+    criteria_id: number
 }
 
 export function CriteriaForm() {
@@ -32,36 +39,54 @@ export function CriteriaForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [formError, setFormError] = useState('');
-
     const [files, setFiles] = useState<FileDTO[]>([]);
+    const [showErrorModal, setShowErrorModal] = useState(false); // Для контроля показа модального окна
+    const [disabled, setDisabled] = useState(false);
     useEffect(() => {
         const fetchCriteria = async () => {
             const token = localStorage.getItem('token');
             try {
                 setLoading(true);
                 setError('');
+                setShowErrorModal(false);
 
-                const response = await axios.get<Criteria[]>(
-                    `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/criteria`,
-                    { headers: { "Authorization": `Bearer ${token}` } }
-                );
+                const [criteriaResponse, attemptResponse] = await Promise.all([
+                    axios.get<Criteria[]>(
+                        `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/criteria`,
+                        { headers: { "Authorization": `Bearer ${token}` } }
+                    ),
 
+                    axios.get<CaseStudyAttemptDTO>(
+                        `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempt/${id}`,
+                        { headers: { "Authorization": `Bearer ${token}` } }
+                    )
+                ]);
 
-                const response2 = await axios.get<CaseStudyAttemptDTO>(
-                    `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempt/${id}`,
-                    { headers: { "Authorization": `Bearer ${token}` } }
-                );
-                setFiles(response2.data.files);
-                setCriteriaList(response.data);
+                if(attemptResponse.status!==200){
+                    console.log(attemptResponse.status);
+                    navigator(-1)
+                }
+                setFiles(attemptResponse.data.files);
+                setCriteriaList(criteriaResponse.data);
+                if (attemptResponse.data.status==='CHECKED'){
+                    setDisabled(true);
+                }
+                // Сопоставляем критерии и оценки
+                const evaluationsData = criteriaResponse.data.map(criteria => {
+                    const attemptMark = attemptResponse.data.marks.find(mark => mark.criteria_id === criteria.criteriaId);
+                    return {
+                        criteriaId: criteria.criteriaId,
+                        score: attemptMark ? attemptMark.mark.toString() : '',
+                        comment: attemptMark ? attemptMark.comment : ''
+                    };
+                });
 
-                setEvaluations(response.data.map(criteria => ({
-                    criteriaId: criteria.criteriaId,
-                    score: '',
-                    comment: ''
-                })));
+                setEvaluations(evaluationsData);
             } catch (e: unknown) {
                 const error = e as AxiosError;
                 setError(error.message);
+                setShowErrorModal(true);
+                navigator("/cabinet");
             } finally {
                 setLoading(false);
             }
@@ -69,6 +94,7 @@ export function CriteriaForm() {
 
         fetchCriteria();
     }, [id]);
+
 
     const handleChange = (index: number, field: keyof Evaluation, value: string) => {
         setEvaluations(prevEvaluations =>
@@ -96,26 +122,46 @@ export function CriteriaForm() {
 
         if (!validateForm()) {
             setFormError('Пожалуйста, заполните все оценки.'); // Устанавливаем сообщение об ошибке
+            setShowErrorModal(true);
             return;
         }
 
+        const token = localStorage.getItem('token');
+
+        const requestData = evaluations.map((evaluation) => ({
+                criteriaId: evaluation.criteriaId,
+                mark: parseInt(evaluation.score),
+                comment: evaluation.comment
+            }))
+
+
         try {
-            console.log(evaluations);
-            // await axios.post('/your-submit-endpoint', evaluations);
-        } catch (error) {
-            console.error('Error submitting form:', error);
+            // Отправляем POST-запрос на сервер
+            const response = await axios.post(
+                `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempt/${id}`,
+                requestData,
+                { headers: { "Authorization": `Bearer ${token}` } }
+            );
+
+            console.log('Ответ сервера:', response.data);
+
+            // При успешной отправке перенаправляем на другой экран или показываем сообщение
+            navigator(-1); // Перенаправление, можно настроить по необходимости
+        } catch (error: unknown) {
+            const axiosError = error as AxiosError;
+            console.error('Ошибка при отправке данных:', axiosError.message);
+            setFormError('Ошибка при отправке данных. Пожалуйста, попробуйте снова.');
+            setShowErrorModal(true); // Показываем модальное окно при ошибке
         }
     };
 
+
     if (loading) return <p>Загрузка...</p>;
-    if (error) return <p className="text-red-500">Ошибка: {error}</p>;
+
     return (
         <>
-            <Header/>
+            <Header />
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
-                {formError && (
-                    <p className="text-red-500 mb-4">{formError}</p> // Сообщение об ошибке
-                )}
                 <div className="flex justify-start p-2">
                     <button onClick={() => navigator(-1)} className="flex items-center text-gray-700 font-semibold">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -131,7 +177,7 @@ export function CriteriaForm() {
                         <ul>
                             {files.map((file, index) => (
                                 <li key={index} className="mb-2">
-                                    <a href={process.env.REACT_APP_S3+file.fullPath} target="_blank" rel="noopener noreferrer"
+                                    <a href={process.env.REACT_APP_S3 + file.fullPath} target="_blank" rel="noopener noreferrer"
                                        className="text-indigo-600 hover:underline">
                                         {file.fileName}
                                     </a>
@@ -161,6 +207,7 @@ export function CriteriaForm() {
                                 className={`mt-1 p-2 border border-gray-300 rounded-lg w-full focus:ring-indigo-500 focus:border-indigo-500 ${
                                     formError && evaluations[index]?.score === '' ? 'border-red-500' : ''
                                 }`}
+                                disabled={disabled}
                             >
                                 <option value="">Выберите оценку</option>
                                 <option value="0">0</option>
@@ -179,18 +226,24 @@ export function CriteriaForm() {
                                 value={evaluations[index]?.comment || ''}
                                 onChange={(e) => handleChange(index, 'comment', e.target.value)}
                                 className="mt-1 p-2 border border-gray-300 rounded-lg w-full h-24 focus:ring-indigo-500 focus:border-indigo-500"
+                                disabled={disabled}
                             />
                         </div>
                     </div>
                 ))}
 
-                <button
-                    type="submit"
-                    className="w-full py-3 px-4 mt-6 text-white font-medium bg-red-600 hover:bg-red-700 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                    Сохранить
-                </button>
+                {!disabled && (
+                    <button
+                        type="submit"
+                        className="w-full py-3 px-4 mt-6 text-white font-medium bg-red-600 hover:bg-red-700 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    >
+                        Отправить
+                    </button>
+                )}
             </form>
+            {showErrorModal && (
+                <ErrorModal error={formError} onClose={() => setShowErrorModal(false)} />
+            )}
         </>
     );
 }

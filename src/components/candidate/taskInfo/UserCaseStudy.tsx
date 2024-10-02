@@ -16,7 +16,10 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
                 setLoading(true);
                 const permission = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts/add/` + info?.user_info.id, {}, {headers: {"Authorization": `Bearer ${token}`}});
                 setLoading(false);
-
+                console.log(permission.data);
+                let a = attempts;
+                a.push({id: permission.data,status: "NOT_DONE"});
+                setAttempts(a);
             }
 
         } catch (e: unknown) {
@@ -60,10 +63,10 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
                     {attempts?.map((attempt, index) => (
                         <tr key={attempt.id} className="border-b">
                             <td className="text-left py-2 px-4">{index + 1}</td>
-                            <td className="text-left py-2 px-4">{attempt.is_done ? 'Отправлена' : 'Не сдана'}</td>
-                            <td className="text-left py-2 px-4">{attempt.is_done ? '' : (<button
+                            <td className="text-left py-2 px-4">{attempt.status==="CHECKED" ? 'Проверена' : attempt.status==="NOT_DONE" ? 'Выдана': 'Отправлена на проверку'}</td>
+                            <td className="text-left py-2 px-4">{attempt.status ==="NOT_DONE"? '' : (<button
                                 className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm  text-white mr-2"
-                                onClick={() => navigator(`/case-task/check/${attempt.id}`, {replace: false})}>Перейти</button>)}</td>
+                                onClick={() => navigator(`/case-task/check/${attempt.id}`)}>Перейти</button>)}</td>
                         </tr>
                     ))}
                     </tbody>

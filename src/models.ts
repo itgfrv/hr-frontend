@@ -10,7 +10,7 @@ export interface ICandidate {
 }
 export interface IAttempt{
     id:number,
-    is_done: boolean
+    status: String
 }
 
 export interface FormData {

@@ -124,7 +124,7 @@ export function CaseTask() {
                         {attempts.map((attempt, index) => (
                             <tr key={attempt.id} className="border-b">
                                 <td className="text-left py-2 px-4">{index + 1}</td>
-                                <td className="text-left py-2 px-4">{attempt.status === 'NOT_DONE' ? 'Не сдана' : attempt.status === "DONE" ? "Сдана" : 'Проверена'}</td>
+                                <td className="text-left py-2 px-4">{attempt.status === 'NOT_DONE' ? 'Открыта попытка' : attempt.status === "CHECKED" ? "Проверена" : 'На проверке'}</td>
                                 <td className="text-left py-2 px-4">
                                     {attempt.status === 'NOT_DONE' ? (
                                         <button
@@ -135,7 +135,7 @@ export function CaseTask() {
                                     ) : attempt.status === 'CHECKED' ? (
                                         <button
                                             className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm text-white mr-2"
-                                            onClick={() => navigation(`/file/upload/${attempt.id}`, {replace: false})}>
+                                            onClick={() => navigation(`/case-task/check/${attempt.id}`)}>
                                             Перейти
                                         </button>
                                     ) : ''}
