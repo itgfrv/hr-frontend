@@ -8,6 +8,7 @@ export function UserQuiz({ info }: { info: ICandidateInfo | undefined }) {
     const navigator = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const [showButton, setShowButton] = useState<boolean>(false);
     function msToHoursMinutesSecondsString(ms: number): string {
         let seconds = Math.floor(ms / 1000);
         let hours = Math.floor(seconds / 3600);
@@ -66,13 +67,13 @@ export function UserQuiz({ info }: { info: ICandidateInfo | undefined }) {
                         </ul>
                     </div>
                 ))}
-                <div className={"m-2 flex justify-center"}>
+                {info?.user_info.status==="WAITING_INTERVIEW"&&(<div className={"m-2 flex justify-center"}>
                     <button className={"bg-red-500 p-2 text-white hover:bg-red-600 rounded-full"}
                             onClick={() => {
                                 givePermission()
                             }}>Выдать доступ к финальному тесту
                     </button>
-                </div>
+                </div>)}
             </div>
         </>
     )

@@ -7,10 +7,13 @@ export interface ICandidate {
     email: string,
     createdDate: string,
     lastActivityDate: string,
+    viewed: boolean,
 }
 export interface IAttempt{
     id:number,
-    status: String
+    status: String,
+    totalMarks: number,
+    maxMarks: number,
 }
 
 export interface FormData {

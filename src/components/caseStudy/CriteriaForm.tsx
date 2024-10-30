@@ -42,6 +42,8 @@ export function CriteriaForm() {
     const [files, setFiles] = useState<FileDTO[]>([]);
     const [showErrorModal, setShowErrorModal] = useState(false); // Для контроля показа модального окна
     const [disabled, setDisabled] = useState(false);
+    const [totalScore, setTotalScore] = useState(0);
+    const [maxScore, setMaxScore] = useState(0);
     useEffect(() => {
         const fetchCriteria = async () => {
             const token = localStorage.getItem('token');
@@ -71,7 +73,6 @@ export function CriteriaForm() {
                 if (attemptResponse.data.status==='CHECKED'){
                     setDisabled(true);
                 }
-                // Сопоставляем критерии и оценки
                 const evaluationsData = criteriaResponse.data.map(criteria => {
                     const attemptMark = attemptResponse.data.marks.find(mark => mark.criteria_id === criteria.criteriaId);
                     return {
@@ -82,6 +83,7 @@ export function CriteriaForm() {
                 });
 
                 setEvaluations(evaluationsData);
+                setMaxScore(criteriaResponse.data.length * 2);
             } catch (e: unknown) {
                 const error = e as AxiosError;
                 setError(error.message);
@@ -95,7 +97,13 @@ export function CriteriaForm() {
         fetchCriteria();
     }, [id]);
 
-
+    useEffect(() => {
+        const scoreSum = evaluations.reduce((sum, evalItem) => {
+            const score = parseInt(evalItem.score);
+            return sum + (isNaN(score) ? 0 : score);
+        }, 0);
+        setTotalScore(scoreSum);
+    }, [evaluations]);
     const handleChange = (index: number, field: keyof Evaluation, value: string) => {
         setEvaluations(prevEvaluations =>
             prevEvaluations.map((evaluation, i) =>
@@ -160,7 +168,7 @@ export function CriteriaForm() {
 
     return (
         <>
-            <Header />
+            <Header/>
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
                 <div className="flex justify-start p-2">
                     <button onClick={() => navigator(-1)} className="flex items-center text-gray-700 font-semibold">
@@ -177,7 +185,8 @@ export function CriteriaForm() {
                         <ul>
                             {files.map((file, index) => (
                                 <li key={index} className="mb-2">
-                                    <a href={process.env.REACT_APP_S3 + file.fullPath} target="_blank" rel="noopener noreferrer"
+                                    <a href={process.env.REACT_APP_S3 + file.fullPath} target="_blank"
+                                       rel="noopener noreferrer"
                                        className="text-indigo-600 hover:underline">
                                         {file.fileName}
                                     </a>
@@ -242,8 +251,11 @@ export function CriteriaForm() {
                 )}
             </form>
             {showErrorModal && (
-                <ErrorModal error={formError} onClose={() => setShowErrorModal(false)} />
+                <ErrorModal error={formError} onClose={() => setShowErrorModal(false)}/>
             )}
+            <div className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg border border-gray-300">
+                <p className="text-lg font-semibold">Баллы: {totalScore} / {maxScore}</p>
+            </div>
         </>
     );
 }

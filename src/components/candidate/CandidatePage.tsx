@@ -18,7 +18,12 @@ export function CandidatePage() {
             try {
                 setError('')
                 setLoading(true);
-                const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form?role=`+choice, {headers: {"Authorization": `Bearer ${token}`}});
+                const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form?role=`+choice,
+                    {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
                 setCandidates(response.data);
                 setLoading(false);
             } catch (e: unknown) {
