@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Копирование зависимостей и установка их
 COPY package*.json ./
-RUN npm install
+RUN npm cache clean --force && npm install
 
 # Копирование остальных файлов приложения
 COPY . .
