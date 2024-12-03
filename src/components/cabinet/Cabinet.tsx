@@ -77,10 +77,16 @@ export function Cabinet() {
                               buttonTitle={"RJYYY"} isPossible={status.caseStudy} isDone={false}/>
                     </div>
                 ) : (
-                    <Task title={"Просмотр кандидатов"} idValue={1}
+                    <div className="w-3/4  bg-center flex justify-center">
+                        <Task title={"Просмотр кандидатов"} idValue={1}
                           description={"Просмотреть список кандидатов"}
                           redirect={"/candidates"}
                           buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                        <Task title={"Просмотр сотрудников"} idValue={1}
+                                                        description={"Просмотреть список сотрудников"}
+                                                        redirect={"/employee"}
+                                                        buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                    </div>
                 )}
             </div>
         </div>

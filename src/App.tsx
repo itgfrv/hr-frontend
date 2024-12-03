@@ -15,6 +15,8 @@ import {FileLoader} from "./components/caseStudy/FileLoader";
 import {CaseTask} from "./components/caseStudy/CaseTask";
 import {CriteriaForm} from "./components/caseStudy/CriteriaForm";
 import {QuizResult} from "./components/quiz/QuizResult";
+import {EmployeeList} from "./components/employee/EmployeeList";
+import {EmployeeInfo} from "./components/employee/EmployeeInfo";
 
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
                 <Route path="/case-task" element={<CaseTask/>}/>
                 <Route path="/case-task/check/:id" element={<CriteriaForm/>}/>
                 <Route path="/result/:id" element={<QuizResult/>} />
+                <Route path="/employee" element={<EmployeeList/>}/>
+                <Route path="/employee/:id" element={<EmployeeInfo/>}/>
             </Routes>
         </BrowserRouter>
 
