@@ -41,7 +41,7 @@ export function QuizResultCard({ userAnswerDto }: QuizResultProps) {
             <div className="flex md:flex flex-col">
                 {question.img_src && (
                     <div className="md:flex-shrink-0 flex justify-center">
-                        <img className="h-full w-full object-contain md:w-80" src={question.img_src} alt="Quiz" />
+                        <img className="h-full w-full object-contain md:w-80" src={process.env.REACT_APP_IMAGE_PREFIX +question.img_src} alt="Quiz" />
                     </div>
                 )}
                 <div className="p-8">

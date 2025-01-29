@@ -5,7 +5,6 @@ import {Loader} from "../shared/Loader";
 import {Header} from "../shared/Header";
 import {ICandidate} from "../../models";
 import axios, {AxiosError} from "axios";
-import {Candidate} from "../candidate/Candidate";
 import {Employee} from "./Employee";
 
 export function EmployeeList() {

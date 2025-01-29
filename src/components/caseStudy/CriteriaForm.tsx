@@ -185,7 +185,7 @@ export function CriteriaForm() {
                         <ul>
                             {files.map((file, index) => (
                                 <li key={index} className="mb-2">
-                                    <a href={process.env.REACT_APP_S3 + file.fullPath} target="_blank"
+                                    <a href={process.env.REACT_APP_IMAGE_PREFIX + file.fullPath} target="_blank"
                                        rel="noopener noreferrer"
                                        className="text-indigo-600 hover:underline">
                                         {file.fileName}

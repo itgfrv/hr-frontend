@@ -40,7 +40,7 @@ export function QuizCard({ question, onAnswerSelected }: QuizCardProps) {
             <div className="flex md:flex flex-col">
                 {question.img_src && (
                     <div className="md:flex-shrink-0 flex flex-col justify-center items-center"><img
-                        className="h-full w-full object-contain md:w-80 cursor-pointer" src={question.img_src}
+                        className="h-full w-full object-contain md:w-80 cursor-pointer" src={process.env.REACT_APP_IMAGE_PREFIX + question.img_src}
                         alt="Quiz" onClick={toggleModal}/>
                         <p className="mt-2 text-sm text-gray-500 italic">Нажмите на
                         изображение для увеличения</p></div>
@@ -85,7 +85,7 @@ export function QuizCard({ question, onAnswerSelected }: QuizCardProps) {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <img src={question.img_src} alt="Enlarged Quiz" className="max-w-full max-h-screen w-auto h-auto" />
+                        <img src={process.env.REACT_APP_IMAGE_PREFIX + question.img_src} alt="Enlarged Quiz" className="max-w-full max-h-screen w-auto h-auto" />
                     </div>
                 </div>
             )}

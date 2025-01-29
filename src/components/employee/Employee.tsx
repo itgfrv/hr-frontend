@@ -8,10 +8,6 @@ interface CandidateProps {
 
 export function Employee(props: CandidateProps) {
     const navigator = useNavigate();
-    let date;
-    if(props.candidate.lastActivityDate){
-        date = new Date(props.candidate.lastActivityDate);
-    }
     return (
         <div className={"border py-2 px-4 rounded flex flex-row items-center mb-2 justify-between"}>
             <div>

@@ -1,16 +1,7 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import axios from "axios";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    type ChartOptions
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
+import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
+import {Bar} from "react-chartjs-2";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -120,7 +111,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
 
                 <button
                     type="submit"
-                    className="self-end mt-4 md:mt-0 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    className="ml-auto bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                     Загрузить
                 </button>
@@ -130,8 +121,9 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
             {loading && <p className="text-gray-500 mb-4">Загрузка...</p>}
 
             {chartData && (
-                <div style={{ height: "400px", width: "100%" }}>
-                    <Bar data={chartData} options={{ responsive: true,
+                <div style={{height: "400px", width: "100%"}}>
+                    <Bar data={chartData} options={{
+                        responsive: true,
                         maintainAspectRatio: false, // График адаптируется к контейнеру
                         plugins: {
                             legend: {
@@ -196,7 +188,8 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
                                     color: "#E0E0E0",
                                 },
                             },
-                        },}} />
+                        },
+                    }}/>
                 </div>
             )}
         </div>
