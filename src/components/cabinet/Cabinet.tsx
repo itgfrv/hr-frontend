@@ -34,7 +34,7 @@ export function Cabinet() {
             try{
                 setError('');
                 setLoading(true)
-                const response = await axios.get<ITaskStatus>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/task-info`, {headers: {"Authorization": `Bearer ${token}`}})
+                const response = await axios.get<ITaskStatus>(`${process.env.REACT_APP_DOMAIN}/api/v1/form/task-info`, {headers: {"Authorization": `Bearer ${token}`}})
                 console.log(response.data)
                 setStatus(response.data);
                 setLoading(false)

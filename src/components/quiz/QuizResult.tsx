@@ -42,7 +42,7 @@ export function QuizResult() {
     const fetchUserAnswers = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/quiz/result/`+id, {headers: {"Authorization": `Bearer ${token}`}}); // Replace with your actual API endpoint
+            const response = await fetch(`${process.env.REACT_APP_DOMAIN}/api/v1/quiz/result/`+id, {headers: {"Authorization": `Bearer ${token}`}}); // Replace with your actual API endpoint
             if (!response.ok) {
                 throw new Error('Failed to fetch data');
             }

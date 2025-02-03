@@ -31,7 +31,7 @@ export function FormComponent() {
         const token = localStorage.getItem("token");
         try {
             setLoading(true);
-            const data = await axios.get<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/resume/questions`, {headers: {"Authorization": `Bearer ${token}`}});
+            const data = await axios.get<FormData>(`${process.env.REACT_APP_DOMAIN}/api/v1/resume/questions`, {headers: {"Authorization": `Bearer ${token}`}});
             const list: Question[] = [];
 
             data.data.questions.map((q) => {
@@ -62,7 +62,7 @@ export function FormComponent() {
                     list.push({question_id: q.question_id, answer_body: q.answer_body})
                 }
             );
-            const data = await axios.put<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/resume/update`, list, {headers: {"Authorization": `Bearer ${token}`}});
+            const data = await axios.put<FormData>(`${process.env.REACT_APP_DOMAIN}/api/v1/resume/update`, list, {headers: {"Authorization": `Bearer ${token}`}});
             setLoading(false);
             alert("Данные сохранены!");
         } catch (e: unknown) {
@@ -84,7 +84,7 @@ export function FormComponent() {
             );
             let wantSend = confirm("Хотите ли вы отправить данные на проверку?\nПосле отправки данных не будет возможности изменить");// eslint-disable-line no-restricted-globals
             if (wantSend) {
-                const data = await axios.post<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/resume/send`, list, {headers: {"Authorization": `Bearer ${token}`}});
+                const data = await axios.post<FormData>(`${process.env.REACT_APP_DOMAIN}/api/v1/resume/send`, list, {headers: {"Authorization": `Bearer ${token}`}});
                 navigation('/cabinet')
             }
             setLoading(false);

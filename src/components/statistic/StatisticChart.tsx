@@ -39,7 +39,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
         setError("");
         try {
             const response = await axios.post<StatisticResponse>(
-                `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/statistic/getStatistic`,
+                `${process.env.REACT_APP_DOMAIN}/api/v1/statistic/getStatistic`,
                 null,
                 {
                     params: {

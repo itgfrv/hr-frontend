@@ -35,7 +35,7 @@ export function CandidateInfo() {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const candidateInfo = await axios.get<ICandidateInfo>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/` + id, { headers: { "Authorization": `Bearer ${token}` } });
+            const candidateInfo = await axios.get<ICandidateInfo>(`${process.env.REACT_APP_DOMAIN}/api/v1/form/` + id, { headers: { "Authorization": `Bearer ${token}` } });
             setInfo(candidateInfo.data);
             setLoading(false);
         } catch (e: unknown) {
@@ -53,7 +53,7 @@ export function CandidateInfo() {
             const isConfirm = confirm("Вы хотите выдать роль " + role + " пользователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
             if (isConfirm) {
                 setLoading(true);
-                await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id + "/" + role, {}, { headers: { "Authorization": `Bearer ${token}` } });
+                await axios.put(`${process.env.REACT_APP_DOMAIN}/api/v1/user/` + id + "/" + role, {}, { headers: { "Authorization": `Bearer ${token}` } });
                 setLoading(false);
             }
         } catch (e: unknown) {

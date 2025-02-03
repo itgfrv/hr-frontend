@@ -16,7 +16,7 @@ export function UserComment({ info }: { info: ICandidateInfo | undefined }) {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const response = await axios.post<IComment>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/comment`, { userId: info?.user_info.id, content: newComment }, { headers: { "Authorization": `Bearer ${token}` } });
+            const response = await axios.post<IComment>(`${process.env.REACT_APP_DOMAIN}/api/v1/comment`, { userId: info?.user_info.id, content: newComment }, { headers: { "Authorization": `Bearer ${token}` } });
             setComments([...comments, response.data]);
             setNewComment('');
             setLoading(false);
@@ -31,7 +31,7 @@ export function UserComment({ info }: { info: ICandidateInfo | undefined }) {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const commentsData = await axios.get<IComment[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/comment/` + info?.user_info.id, { headers: { "Authorization": `Bearer ${token}` } });
+            const commentsData = await axios.get<IComment[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/comment/` + info?.user_info.id, { headers: { "Authorization": `Bearer ${token}` } });
             setComments(commentsData.data);
             setLoading(false);
         } catch (e: unknown) {

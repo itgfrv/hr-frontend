@@ -27,7 +27,7 @@ export function FileLoader() {
                 });
                 const token = localStorage.getItem('token');
                 if (token) {
-                    await axios.post<FormData>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/load/${id}`, formData, {
+                    await axios.post<FormData>(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/load/${id}`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                             'Authorization': `Bearer ${token}`,

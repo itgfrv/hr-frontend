@@ -29,7 +29,7 @@ export function RegistrationForm() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/auth/register`, {
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/v1/auth/register`, {
                 firstname: formData.firstName,
                 lastname: formData.lastName,
                 email: formData.email,

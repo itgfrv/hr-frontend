@@ -13,7 +13,7 @@ export function Header() {
     }
 
     async function setUserInfo(token: string) {
-        const data = await axios.get<IUser>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form/personal`, {headers: {"Authorization": `Bearer ${token}`}});
+        const data = await axios.get<IUser>(`${process.env.REACT_APP_DOMAIN}/api/v1/form/personal`, {headers: {"Authorization": `Bearer ${token}`}});
 
         localStorage.setItem('user', JSON.stringify(data.data));
     }

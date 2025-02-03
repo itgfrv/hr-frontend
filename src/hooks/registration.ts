@@ -11,7 +11,7 @@ export function useRegistration() {
         try {
             setError('')
             setLoading(true);
-            const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form`);
+            const response = await axios.get<ICandidate[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/form`);
             setCandidates(response.data);
             setLoading(false);
         } catch (e: unknown) {

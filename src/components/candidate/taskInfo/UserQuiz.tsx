@@ -34,7 +34,7 @@ export function UserQuiz({ info }: { info: ICandidateInfo | undefined }) {
             const isConfirm = confirm("Вы хотите выдать доступ к финальному тесту пользователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
             if (isConfirm) {
                 setLoading(true);
-                await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/user/` + id, {}, { headers: { "Authorization": `Bearer ${token}` } });
+                await axios.put(`${process.env.REACT_APP_DOMAIN}/api/v1/user/` + id, {}, { headers: { "Authorization": `Bearer ${token}` } });
                 setLoading(false);
             }
         } catch (e: unknown) {

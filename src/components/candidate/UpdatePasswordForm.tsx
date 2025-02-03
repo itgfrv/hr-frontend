@@ -22,7 +22,7 @@ const UpdatePasswordForm: React.FC<UpdatePasswordFormProps> = ({ userId }) => {
         setSuccess(false);
         console.log(newPassword);
         try {
-            await axios.put(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/auth/${userId}`, newPassword, {
+            await axios.put(`${process.env.REACT_APP_DOMAIN}/api/v1/auth/${userId}`, newPassword, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

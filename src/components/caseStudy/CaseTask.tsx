@@ -21,7 +21,7 @@ export function CaseTask() {
             try {
                 setError('');
                 setLoading(true);
-                const response = await axios.get<IAttempt[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts`, {headers: {"Authorization": `Bearer ${token}`}});
+                const response = await axios.get<IAttempt[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempts`, {headers: {"Authorization": `Bearer ${token}`}});
                 setAttempts(response.data);
                 setLoading(false);
             } catch (e: unknown) {

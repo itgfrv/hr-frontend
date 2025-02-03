@@ -54,12 +54,12 @@ export function CriteriaForm() {
 
                 const [criteriaResponse, attemptResponse] = await Promise.all([
                     axios.get<Criteria[]>(
-                        `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/criteria`,
+                        `${process.env.REACT_APP_DOMAIN}/api/v1/case-study/criteria`,
                         { headers: { "Authorization": `Bearer ${token}` } }
                     ),
 
                     axios.get<CaseStudyAttemptDTO>(
-                        `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempt/${id}`,
+                        `${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempt/${id}`,
                         { headers: { "Authorization": `Bearer ${token}` } }
                     )
                 ]);
@@ -146,7 +146,7 @@ export function CriteriaForm() {
         try {
             // Отправляем POST-запрос на сервер
             const response = await axios.post(
-                `http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempt/${id}`,
+                `${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempt/${id}`,
                 requestData,
                 { headers: { "Authorization": `Bearer ${token}` } }
             );

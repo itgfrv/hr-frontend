@@ -15,7 +15,7 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
             const isConfirm = confirm("Вы хотите выдать доступ к чертежному заданию пользователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
             if (isConfirm) {
                 setLoading(true);
-                const permission = await axios.post(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts/add/` + info?.user_info.id, {}, {headers: {"Authorization": `Bearer ${token}`}});
+                const permission = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempts/add/` + info?.user_info.id, {}, {headers: {"Authorization": `Bearer ${token}`}});
                 setLoading(false);
                 console.log(permission.data);
                 let a = attempts;
@@ -35,7 +35,7 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
         const token = localStorage.getItem('token');
         try {
             setLoading(true);
-            const attemptInfo = await axios.get<IAttempt[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/case-study/attempts/` + info?.user_info.id, { headers: { "Authorization": `Bearer ${token}` } });
+            const attemptInfo = await axios.get<IAttempt[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempts/` + info?.user_info.id, { headers: { "Authorization": `Bearer ${token}` } });
             setAttempts(attemptInfo.data);
             setLoading(false);
         } catch (e: unknown) {

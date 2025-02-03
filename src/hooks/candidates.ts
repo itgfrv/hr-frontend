@@ -13,16 +13,16 @@ export function useCandidates(status: string) {
             setError('')
             setLoading(true);
             if (status === "USER") {
-                const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
+                const response = await axios.get<ICandidate[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
                 setCandidates(response.data);
             }
             if(status === "EMPLOYEE"){
-                //const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
+                //const response = await axios.get<ICandidate[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
                 //setCandidates(response.data);
                 console.log(status)
             }
             if(status === "REJECT"){
-                //const response = await axios.get<ICandidate[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
+                //const response = await axios.get<ICandidate[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/form`, {headers: {"Authorization": `Bearer ${token}`}});
                 //setCandidates(response.data);
                 console.log(status)
             }

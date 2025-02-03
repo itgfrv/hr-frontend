@@ -55,7 +55,7 @@ export function Quiz() {
         try {
             setError('');
             setLoading(true)
-            const quizData = await axios.get<Quiz>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/quiz/` + id, {headers: {"Authorization": `Bearer ${token}`}});
+            const quizData = await axios.get<Quiz>(`${process.env.REACT_APP_DOMAIN}/api/v1/quiz/` + id, {headers: {"Authorization": `Bearer ${token}`}});
             setQuiz(quizData.data);
             setLoading(false);
 
@@ -71,7 +71,7 @@ export function Quiz() {
         try {
             setError('');
             setLoading(true)
-            const resultData = await axios.post<Result[]>(`http://${process.env.REACT_APP_DOMAIN}:8080/api/v1/quiz/` + id, selectedAnswers, {headers: {"Authorization": `Bearer ${token}`}});
+            const resultData = await axios.post<Result[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/quiz/` + id, selectedAnswers, {headers: {"Authorization": `Bearer ${token}`}});
             setQuiz(null)
             setTimer(false);
             setResult(resultData.data);
