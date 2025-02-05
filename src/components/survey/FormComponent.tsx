@@ -141,6 +141,16 @@ export function FormComponent() {
     return (
         <>
             <Header/>
+            <div className="max-w-2xl mx-auto mt-6 p-6 rounded-lg shadow-md">
+                <p className="text-lg text-gray-800 leading-relaxed text-center">
+                    <span className="font-semibold">Уважаемый соискатель!</span> Мы рады приветствовать Вас на сайте отдела кадров компании <span className="font-bold">БАСТИОН</span>.
+                </p>
+                <p className="mt-4 text-gray-700">
+                    Просим Вас заполнить анкету <span className="font-semibold">(все поля, пожалуйста)</span>, после чего нажать кнопку <span className="font-semibold">"Отправить"</span>. После отправки анкеты Вам станет доступен пробный тест.
+                    Только после прохождения теста анкета и результаты теста автоматически будут отправлены на рассмотрение к HR-специалисту.
+                </p>
+            </div>
+
             <form onSubmit={handleSubmit} className="p-4 flex flex-col items-center">
                 <div className="w-1/4">
                     {questions.map((question) => (
@@ -152,7 +162,6 @@ export function FormComponent() {
                                 type="text"
                                 id={`${question.question_id}`}
                                 value={question.answer_body}
-
                                 onChange={(e) => handleInputChange(question.question_id, e.target.value, question.question)}
                                 className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
                             />
@@ -162,14 +171,14 @@ export function FormComponent() {
                 <div className="mt-4">
                     <button
                         type="submit"
-                        className="mr-4 bg-red-500 hover:bg-red-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="mr-4 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         Отправить
                     </button>
                     <button
                         type="button"
                         onClick={handleUpdate}
-                        className="ml-4 bg-red-500 hover:bg-red-700 text-white  py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="ml-4 bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         Сохранить
                     </button>

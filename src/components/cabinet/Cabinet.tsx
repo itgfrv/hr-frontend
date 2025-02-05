@@ -60,19 +60,19 @@ export function Cabinet() {
                 {(role === "USER"|| role ==="EMPLOYEE"|| role==="REJECT")? (
                     <div className="w-3/4  bg-center flex justify-center">
                         <Task title={"Анкета"} idValue={1}
-                              description={"Не стестняйтесь рассказывать о своем опыте, потому что анкета влияется на итоговый результат"}
+                              description={"Просим ответить на вопросы максимально подробно - это позволит нам лучше понять Вас как человека и оценить Ваш потенциал как будущего сотрудника"}
                               redirect={"/resume"}
                               buttonTitle={"RJYYY"} isPossible={status.resume} isDone={status.is_resume_done}/>
                         <Task title={"Демо тест"} idValue={1}
-                              description={"Для того, чтобы пройти демо-тест необходимо отправить анкету на проверку"}
+                              description={"Для прохождения демо-теста необходимо отправить анкету на проверку. В тесте всего 10 вопросов, и он займет не более 10 минут"}
                               redirect={"/quiz/1"}
                               buttonTitle={"RJYYY"} isPossible={status.demo} isDone={status.is_demo_done}/>
                         <Task title={"Финальный тест"} idValue={1}
-                              description={"Для того, чтобы пройти финальный тест необходимо, чтобы работодатель проверил анкету"}
+                              description={"Для прохождения финального теста необходимо, чтобы работодатель пригласил Вас на собеседование"}
                               redirect={"/quiz/2"}
                               buttonTitle={"RJYYY"} isPossible={status.interview} isDone={status.is_interview_done}/>
                         <Task title={"Чертежное задание"} idValue={1}
-                              description={"Для того, чтобы пройти чертежное задание необходимо, чтобы работодатель проверил анкету"}
+                              description={"Для прохождения чертежного задания необходимо, чтобы работодатель провел с Вами очное собеседование. Чертежное задание выполняется дома"}
                               redirect={"/case-task"}
                               buttonTitle={"RJYYY"} isPossible={status.caseStudy} isDone={false}/>
                     </div>
