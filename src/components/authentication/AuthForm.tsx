@@ -98,6 +98,15 @@ export function AuthForm() {
                             Войти
                         </button>
                     </div>
+                    <div className="mt-3 flex justify-center">
+                        <button
+                            className="text-blue-800"
+                            onClick={() => navigation("/password/new", { replace: false })}
+                        >
+                            Забыли пароль? 
+                        </button>
+                    </div>
+
                     {loading && <p>Загрузка...</p>}
                     {error && <span className="text-red-500">{error}</span>}
                 </form>

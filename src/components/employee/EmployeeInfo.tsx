@@ -21,6 +21,9 @@ export function EmployeeInfo() {
     const [error, setError] = useState<string>('');
     const [statisticView, setStatisticView] = useState<StatisticView>(StatisticView.DISCIPLINE);
     const userId:number = id? +id:0;
+    const [startDate, setStartDate] = useState<string>("");
+    const [endDate, setEndDate] = useState<string>("");
+    const [render, setRender] = useState<boolean>(false);
     async function getInfo() {
         const token = localStorage.getItem('token');
         try {
@@ -57,7 +60,15 @@ export function EmployeeInfo() {
     useEffect(() => {
         getInfo();
     }, [])
-
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!startDate || !endDate) {
+            setError("Выберите обе даты");
+            return;
+        }
+        setRender(true);
+        setRender(false);
+    };
     return (
         <>
             <Header />
@@ -124,32 +135,64 @@ export function EmployeeInfo() {
                             </button>
                         </div>
                     </div>)}
+                    <div className="p-6 max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
+                    <form className="flex flex-col md:flex-row gap-4 mb-6" onSubmit={handleSubmit}>
+                        <div className="flex flex-col">
+                            <label htmlFor="startDate" className="text-sm font-medium text-gray-700">Начальная дата</label>
+                            <input
+                                type="date"
+                                id="startDate"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                        <label htmlFor="endDate" className="text-sm font-medium text-gray-700">Конечная дата</label>
+                        <input
+                            type="date"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="ml-auto bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        >
+                            Загрузить
+                        </button>
+                    </form>
+                    </div>
                 {statisticView === StatisticView.DISCIPLINE && (
                     <div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserWorkHours" name="Время работы"/>
+                            <StatisticChart userId={userId} statistic="getUserWorkHours" name="Время работы" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserLatesForDuty" name="Опоздания в дни дежурств"/>
+                            <StatisticChart userId={userId} statistic="getUserLatesForDuty" name="Опоздания в дни дежурств" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserFines" name="Дисциплинарные штрафы"/>
+                            <StatisticChart userId={userId} statistic="getUserFines" name="Дисциплинарные штрафы" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserDemandsNotices" name="Уведомления о несоответсвии требований"/>
+                            <StatisticChart userId={userId} statistic="getUserDemandsNotices" name="Уведомления о несоответсвии требований" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                     </div>
                 )}
                 {statisticView === StatisticView.EFFECTIVENESS && (
                     <div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserOrdersInWork" name="Заказы в работе"/>
+                            <StatisticChart userId={userId} statistic="getUserOrdersInWork" name="Заказы в работе" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserUploadedDocs" name="Загруженные документы"/>
+                            <StatisticChart userId={userId} statistic="getUserUploadedDocs" name="Загруженные документы" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         <div>
-                            <StatisticChart userId={userId} statistic="getUserOrdersLates" name="Уведомления о просорочке заказа"/>
+                            <StatisticChart userId={userId} statistic="getUserOrdersLates" name="Уведомления о просорочке заказа" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
                         {/*<div>*/}
                         {/*    <StatisticChart userId={userId} statistic="getUserWorkHours" name="ГРАФИК 1111"/>*/}

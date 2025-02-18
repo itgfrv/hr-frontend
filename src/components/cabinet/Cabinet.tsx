@@ -35,7 +35,6 @@ export function Cabinet() {
                 setError('');
                 setLoading(true)
                 const response = await axios.get<ITaskStatus>(`${process.env.REACT_APP_DOMAIN}/api/v1/form/task-info`, {headers: {"Authorization": `Bearer ${token}`}})
-                console.log(response.data)
                 setStatus(response.data);
                 setLoading(false)
             } catch (e: unknown) {
@@ -57,7 +56,7 @@ export function Cabinet() {
             {loading&&<Loader/>}
             {error&&<ErrorMessage error={error}/>}
             <div className="flex justify-center">
-                {(role === "USER"|| role ==="EMPLOYEE"|| role==="REJECT")? (
+                {(role === "USER"|| role==="REJECT")? (
                     <div className="w-3/4  bg-center flex justify-center">
                         <Task title={"Анкета"} idValue={1}
                               description={"Просим ответить на вопросы максимально подробно - это позволит нам лучше понять Вас как человека и оценить Ваш потенциал как будущего сотрудника"}
@@ -76,18 +75,34 @@ export function Cabinet() {
                               redirect={"/case-task"}
                               buttonTitle={"RJYYY"} isPossible={status.caseStudy} isDone={false}/>
                     </div>
-                ) : (
-                    <div className="w-3/4  bg-center flex justify-center">
-                        <Task title={"Просмотр кандидатов"} idValue={1}
-                          description={"Просмотреть список кандидатов"}
-                          redirect={"/candidates"}
-                          buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
-                        <Task title={"Просмотр сотрудников"} idValue={1}
-                                                        description={"Просмотреть список сотрудников"}
-                                                        redirect={"/employee"}
-                                                        buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
-                    </div>
-                )}
+                ) : (role ==="EMPLOYEE"|| role==="REJECT")?
+                    (
+                        <div className="w-3/4  bg-center flex justify-center">
+                            <Task title={"Перекрестная оценка"} idValue={1}
+                                  description={"Перекрестная оценка"}
+                                  redirect={"/cross-check/attempts"}
+                                  buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                        </div>
+                    ) :(
+                        <div className="w-3/4  bg-center flex justify-center">
+                            <Task title={"Кандидаты"} idValue={1}
+                                  description={"Просмотр списка кандидатов"}
+                                  redirect={"/candidates"}
+                                  buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>  
+                            <Task title={"Отклонённые кандидаты"} idValue={1}
+                                  description={"Просмотр списка кандидатов, которые не подошли"}
+                                  redirect={"/reject"}
+                                  buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                            <Task title={"Сотрудники"} idValue={1}
+                                  description={"Просмотр списка сотрудников"}
+                                  redirect={"/employee"}
+                                  buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                            <Task title={"Перекрестная оценка"} idValue={1}
+                                      description={"Перекрестная оценка"}
+                                      redirect={"/cross-check"}
+                                      buttonTitle={"RJYYY"} isPossible={true} isDone={false}/>
+                        </div>
+                    )}
             </div>
         </div>
     );

@@ -1,13 +1,25 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from "chart.js";
-import {Bar} from "react-chartjs-2";
+import {Chart} from "react-chartjs-2";
+import {
+    Chart as ChartJS,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    PointElement,
+    LineElement
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
 interface StatisticResponse {
     status: string;
     data: Array<{ date: string; count: number }>;
+    trend: Array<number>;
+    avg:number;
 }
 
 interface ChartData {
@@ -16,6 +28,7 @@ interface ChartData {
         label: string;
         data: number[];
         backgroundColor: string;
+        type:"bar"|"line"
     }>;
 }
 
@@ -23,18 +36,22 @@ interface StatisticChartProps {
     userId: number;
     statistic: string;
     name: string;
+    startDate: string;
+    endDate: string;
+    render: boolean;
 }
 
 
 
-const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name}) => {
-    const [startDate, setStartDate] = useState<string>("");
-    const [endDate, setEndDate] = useState<string>("");
+const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name, startDate, endDate, render}) => {
     const [chartData, setChartData] = useState<ChartData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-    const fetchStatistic = async () => {
+    useEffect(() => {
+        if ((!startDate || !endDate) && render) return;
+        const fetchStatistic = async () => {
+
         setLoading(true);
         setError("");
         try {
@@ -63,6 +80,20 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
                         label: "Количество",
                         data: values,
                         backgroundColor: "rgba(59, 130, 246, 0.7)",
+                        type:"line"
+                    },
+                    {
+                        label: "Тренд",
+                        data: response.data.trend,
+                        backgroundColor: "rgba(255, 99, 132, 1)",
+                        type:"line"
+
+                    },
+                    {
+                        label: "Среднее",
+                        data: new Array(labels.length).fill(response.data.avg), 
+                        backgroundColor: "rgba(75, 192, 192, 1)",
+                        type:"line"
                     },
                 ],
             });
@@ -72,59 +103,23 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
             setLoading(false);
         }
     };
+    fetchStatistic();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!startDate || !endDate) {
-            setError("Выберите обе даты");
-            return;
-        }
-        fetchStatistic();
-    };
+    }, [userId, statistic, startDate, endDate, render]);
+
 
     return (
         <div className="p-6 max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-bold mb-4 text-center">{name}</h1>
-
-            <form className="flex flex-col md:flex-row gap-4 mb-6" onSubmit={handleSubmit}>
-                <div className="flex flex-col">
-                    <label htmlFor="startDate" className="text-sm font-medium text-gray-700">Начальная дата</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <label htmlFor="endDate" className="text-sm font-medium text-gray-700">Конечная дата</label>
-                    <input
-                        type="date"
-                        id="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="ml-auto bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                    Загрузить
-                </button>
-            </form>
 
             {error && <p className="text-red-500 mb-4">{error}</p>}
             {loading && <p className="text-gray-500 mb-4">Загрузка...</p>}
 
             {chartData && (
                 <div style={{height: "400px", width: "100%"}}>
-                    <Bar data={chartData} options={{
+                    <Chart data={chartData} type="line" options={{
                         responsive: true,
-                        maintainAspectRatio: false, // График адаптируется к контейнеру
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: "top",
