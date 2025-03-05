@@ -45,7 +45,7 @@ export function RejectsPage() {
             <div className={"container mx-auto max-w-2xl pt-5"}>
                 {loading && <Loader/>}
                 {error && <ErrorMessage error={error}/>}
-                {candidates.map(candidate => <Candidate candidate={candidate} key={candidate.id}/>)}
+                {candidates.map(candidate => <Candidate candidate={candidate} key={candidate.id} setCandidates={setCandidates}/>)}
             </div>
         </>
     );

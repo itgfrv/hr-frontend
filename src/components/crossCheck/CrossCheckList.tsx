@@ -38,15 +38,6 @@ export default function CrossCheckList() {
                     >
                         Перейти к сессиям
                     </button>
-                </div>
-                <div className="border border-gray-300 rounded-lg p-6 mb-4 shadow-md bg-white">
-                    <h2 className="text-xl font-semibold">Руководитель оценивет сострудника</h2>
-                    <button
-                        className="mt-3 px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition"
-                        onClick={() => handleClick(2)}
-                    >
-                        Перейти к сессиям
-                    </button>
                     <button
                         className="mt-3 px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition m-2"
                         onClick={() => handleEvaluate()}

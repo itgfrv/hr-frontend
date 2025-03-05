@@ -45,7 +45,13 @@ export default function CrossCheckSessions() {
 
         axios.post(`${process.env.REACT_APP_DOMAIN}/api/v1/cross-check/session/${id}`, { description })
             .then((response) => {
-                setSessions([...sessions, response.data]);
+                const newSession : Session= {
+                    id: 1,
+                    date: "string",
+                    description: description,
+                    status: "string",
+                }
+                setSessions([newSession, ...sessions]);
                 setIsModalOpen(false);
                 setDescription("");
             })
