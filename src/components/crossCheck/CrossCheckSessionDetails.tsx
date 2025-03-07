@@ -41,6 +41,7 @@ export default function CrossCheckSessionDetails() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [averageMarks, setAverageMarks] = useState<Evaluation[]>([]);
+    const [weight, setWeight] = useState<number>(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,10 +67,45 @@ export default function CrossCheckSessionDetails() {
             });
     }, [id]);
 
+    const fetchData = () => {
+        setLoading(true);
+        setError(null);
+
+        axios
+            .get(`${process.env.REACT_APP_DOMAIN}/api/v1/cross-check/sessions/details/${id}/avg`, {
+                params: { weight }
+                
+            })
+            .then((response) => {
+                setAverageMarks(response.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError("Error loading average marks: " + err.message);
+            });
+    };
+
     return (
         <>
             <Header />
             <div className="p-6 max-w-10xl mx-auto">
+                <div className="mb-4 flex items-center gap-4">
+                    <label htmlFor="weight" className="font-semibold">Коэффициент:</label>
+                    <input
+                        id="weight"
+                        type="number"
+                        step="0.1"
+                        className="border p-2 rounded"
+                        value={weight}
+                        onChange={(e) => setWeight(parseFloat(e.target.value) || 1)}
+                    />
+                    <button 
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        onClick={fetchData}
+                    >
+                        Заново получить данные
+                    </button>
+                </div>
                 {loading && <p className="text-center">Loading...</p>}
                 {error && <p className="text-red-500 text-center">Error: {error}</p>}
                 
