@@ -37,6 +37,9 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
             setLoading(true);
             const attemptInfo = await axios.get<IAttempt[]>(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/attempts/` + info?.user_info.id, { headers: { "Authorization": `Bearer ${token}` } });
             setAttempts(attemptInfo.data);
+            if (attemptInfo.data.length === 0 || attemptInfo.data[attemptInfo.data.length - 1].status === "CHECKED") {
+                setShowButton(true);
+            }
             setLoading(false);
         } catch (e: unknown) {
             const error = e as AxiosError;
@@ -45,11 +48,12 @@ export function UserCaseStudy({ info }: { info: ICandidateInfo | undefined }) {
         }
     }
     useEffect(() => {
-        getUserAttempts();
-        if(info?.user_info.status==="WAITING_RESULT"&&(attempts.length===0 || attempts[attempts.length-1].status === "CHECKED")){
-            setShowButton(true);
-        }
-    }, [])
+        const fetchAttempts = async () => {
+            await getUserAttempts();
+        };
+    
+        fetchAttempts();
+    }, []);
     return (
         <>
             <div className={"m-2"}>

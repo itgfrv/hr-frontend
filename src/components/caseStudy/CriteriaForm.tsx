@@ -197,6 +197,25 @@ export function CriteriaForm() {
                         <p>Файлы отсутствуют</p>
                     )}
                 </div>
+
+                <div className="mt-8">
+                    <h2 className="text-xl font-semibold mb-4">Проставить везде</h2>
+                    {[0, 1, 2].map((value) => (
+                                        <label key={value} className="inline-flex items-center mr-4">
+                                            <input
+                                                type="radio"
+                                                value={value}
+                                                name="score-all"
+                                                onChange={(e) =>
+                                                    setEvaluations(evaluations.map((ev) => ({ ...ev, score: e.target.value })))
+                                                }
+                                                className="form-radio text-indigo-600"
+                                                disabled={disabled}
+                                            />
+                                            <span className="ml-2">{value}</span>
+                                        </label>
+                                    ))}
+                </div>
                 {criteriaList.map((criteria, index) => (
                     <div key={criteria.criteriaId}
                          className="mb-6 bg-white rounded-lg shadow-lg p-6 border border-gray-200">
@@ -208,21 +227,25 @@ export function CriteriaForm() {
                                    className="block text-sm font-medium text-gray-700">
                                 Оценка
                             </label>
-                            <select
-                                id={`score-${criteria.criteriaId}`}
-                                name={`score-${criteria.criteriaId}`}
-                                value={evaluations[index]?.score || ''}
-                                onChange={(e) => handleChange(index, 'score', e.target.value)}
-                                className={`mt-1 p-2 border border-gray-300 rounded-lg w-full focus:ring-indigo-500 focus:border-indigo-500 ${
-                                    formError && evaluations[index]?.score === '' ? 'border-red-500' : ''
-                                }`}
-                                disabled={disabled}
-                            >
-                                <option value="">Выберите оценку</option>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </select>
+                            <div className="mt-1">
+                                    {[0, 1, 2].map((value) => (
+                                        <label key={value} className="inline-flex items-center mr-4">
+                                            <input
+                                                type="radio"
+                                                name={`score-${criteria.criteriaId}`}
+                                                value={value}
+                                                checked={evaluations[index]?.score === String(value)}
+                                                onChange={(e) => handleChange(index, 'score', e.target.value)}
+                                                className="form-radio text-indigo-600"
+                                                disabled={disabled}
+                                            />
+                                            <span className="ml-2">{value}</span>
+                                        </label>
+                                    ))}
+                            {formError && evaluations[index]?.score === '' && (
+                                <p className="text-red-500 text-sm mt-1">Выберите оценку</p>
+                            )}
+                            </div>
                         </div>
                         <div className="mt-4">
                             <label htmlFor={`comment-${criteria.criteriaId}`}
