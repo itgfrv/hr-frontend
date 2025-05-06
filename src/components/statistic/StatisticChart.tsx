@@ -39,11 +39,12 @@ interface StatisticChartProps {
     startDate: string;
     endDate: string;
     render: boolean;
+    description?: string; 
 }
 
 
 
-const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name, startDate, endDate, render}) => {
+const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name, startDate, endDate, render, description}) => {
     const [chartData, setChartData] = useState<ChartData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -54,6 +55,7 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
 
         setLoading(true);
         setError("");
+    
         try {
             const response = await axios.post<StatisticResponse>(
                 `${process.env.REACT_APP_DOMAIN}/api/v1/statistic/getStatistic`,
@@ -111,7 +113,11 @@ const StatisticChart: React.FC<StatisticChartProps> = ({ userId, statistic, name
     return (
         <div className="p-6 max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-bold mb-4 text-center">{name}</h1>
-
+            {description && (
+                <p className="text-gray-600 mb-4 text-center text-sm italic">
+                    {description}
+                </p>
+            )}
             {error && <p className="text-red-500 mb-4">{error}</p>}
             {loading && <p className="text-gray-500 mb-4">Загрузка...</p>}
 

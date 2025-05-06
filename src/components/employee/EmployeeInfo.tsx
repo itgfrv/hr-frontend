@@ -9,13 +9,14 @@ import {UserResume} from "../candidate/taskInfo/UserResume";
 enum StatisticView{
     DISCIPLINE,
     EFFECTIVENESS,
-    CROSSCHECK
+    CROSSCHECK,
+    KPI
 }
 
 export function EmployeeInfo() {
     const { id } = useParams();
     const navigator = useNavigate();
-    const [viewMode, setViewMode] = useState<'info' | 'changePassword'>('info'); // состояние для переключения между вкладками
+    const [viewMode, setViewMode] = useState<'info' | 'changePassword'>('info');
     const [loading, setLoading] = useState<boolean>(false);
     const [info, setInfo] = useState<ICandidateInfo>();
     const [error, setError] = useState<string>('');
@@ -37,25 +38,6 @@ export function EmployeeInfo() {
             setError(error.message);
         }
     }
-
-
-
-    async function changeRole(role: string) {
-        const token = localStorage.getItem('token');
-        try {
-            const isConfirm = confirm("Вы хотите выдать роль " + role + " пользователю " + info?.user_info.firstname + " " + info?.user_info.lastname + "?");// eslint-disable-line no-restricted-globals
-            if (isConfirm) {
-                setLoading(true);
-                await axios.put(`${process.env.REACT_APP_DOMAIN}/api/v1/user/` + id + "/" + role, {}, { headers: { "Authorization": `Bearer ${token}` } });
-                setLoading(false);
-            }
-        } catch (e: unknown) {
-            const error = e as AxiosError;
-            setLoading(false);
-            setError(error.message);
-        }
-    }
-
 
     useEffect(() => {
         getInfo();
@@ -133,6 +115,12 @@ export function EmployeeInfo() {
                             >
                                 Перекрестная оценка
                             </button>
+                            <button
+                                className={`p-2 text-gray-700 font-semibold ${statisticView === StatisticView.KPI ? 'border-b-2 border-red-500' : ''}`}
+                                onClick={() => setStatisticView(StatisticView.KPI)}
+                            >
+                                KPI
+                            </button>
                         </div>
                     </div>)}
                     <div className="p-6 max-w-6xl mx-auto bg-white shadow-lg rounded-lg">
@@ -194,9 +182,32 @@ export function EmployeeInfo() {
                         <div>
                             <StatisticChart userId={userId} statistic="getUserOrdersLates" name="Уведомления о просорочке заказа" startDate={startDate} endDate={endDate} render={render}/>
                         </div>
-                        {/*<div>*/}
-                        {/*    <StatisticChart userId={userId} statistic="getUserWorkHours" name="ГРАФИК 1111"/>*/}
-                        {/*</div>*/}
+                    </div>
+                )}
+                {statisticView === StatisticView.KPI && (
+                    <div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="getUserDailyRating" name="Оценка работы за день" startDate={startDate} endDate={endDate} render={render} description="Выводятся только ненулевые оценки"/>
+                        </div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="salaryMonthInfo" name="Зарплата по месяцам" startDate={startDate} endDate={endDate} render={render} description="Среднее значение выводится для этого пользователя"/>
+                        </div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="salaryHourInfo" name="Средний доход в час" startDate={startDate} endDate={endDate} render={render} description="Среднее значение выводится для этого пользователя"/>
+                        </div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="finesMonthInfo" name="Штраф по месяцам" startDate={startDate} endDate={endDate} render={render} description="Среднее значение выводится для этого пользователя"/>
+                        </div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="getUserOrdersInWorkHours" name="Процент времени когда в работе находится заказ" startDate={startDate} endDate={endDate} render={render}/>
+                        </div>
+
+                        <div>
+                            <StatisticChart userId={userId} statistic="getUserWorkHoursWithoutBreaks" name="Время работы без перерывов" startDate={startDate} endDate={endDate} render={render}/>
+                        </div>
+                        <div>
+                            <StatisticChart userId={userId} statistic="getUserWorkHoursWithoutBrakesAndTrips" name="Время работы без перерывов и отъездов" startDate={startDate} endDate={endDate} render={render}/>
+                        </div>
                     </div>
                 )}
             </div>
