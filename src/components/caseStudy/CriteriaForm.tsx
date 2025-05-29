@@ -208,14 +208,14 @@ export function CriteriaForm() {
                             Деталь 6. Регулировочный винт
 
                         </label>
-                        <a href={link1}>Деталь 6. Регулировочный винт</a>
+                        <p>{link1}</p>
                     </div>
                     
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Деталь 7. Стопорный винт
                         </label>
-                        <a href={link1}>Деталь 6. Регулировочный винт</a>
+                        <p>{link2}</p>
                     </div>
 
                 <div className="mt-8">
