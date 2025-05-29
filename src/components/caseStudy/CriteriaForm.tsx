@@ -22,6 +22,8 @@ interface CaseStudyAttemptDTO {
     id: number;
     userId: number;
     status: string;
+    link1:string;
+    link2:string;
     files: FileDTO[];
     marks:MarkDto[];
 }
@@ -44,6 +46,8 @@ export function CriteriaForm() {
     const [disabled, setDisabled] = useState(false);
     const [totalScore, setTotalScore] = useState(0);
     const [maxScore, setMaxScore] = useState(0);
+        const [link1, setLink1] = useState<string>('');
+        const [link2, setLink2] = useState<string>('');
     useEffect(() => {
         const fetchCriteria = async () => {
             const token = localStorage.getItem('token');
@@ -69,6 +73,8 @@ export function CriteriaForm() {
                     navigator(-1)
                 }
                 setFiles(attemptResponse.data.files);
+                setLink1(attemptResponse.data.link1);
+                setLink2(attemptResponse.data.link2);
                 setCriteriaList(criteriaResponse.data);
                 if (attemptResponse.data.status==='CHECKED'){
                     setDisabled(true);
@@ -169,7 +175,7 @@ export function CriteriaForm() {
     return (
         <>
             <Header/>
-            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
+            <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-4">
                 <div className="flex justify-start p-2">
                     <button onClick={() => navigator(-1)} className="flex items-center text-gray-700 font-semibold">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
@@ -197,6 +203,20 @@ export function CriteriaForm() {
                         <p>Файлы отсутствуют</p>
                     )}
                 </div>
+                  <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Деталь 6. Регулировочный винт
+
+                        </label>
+                        <a href={link1}>Деталь 6. Регулировочный винт</a>
+                    </div>
+                    
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Деталь 7. Стопорный винт
+                        </label>
+                        <a href={link1}>Деталь 6. Регулировочный винт</a>
+                    </div>
 
                 <div className="mt-8">
                     <h2 className="text-xl font-semibold mb-4">Проставить везде</h2>
@@ -216,53 +236,68 @@ export function CriteriaForm() {
                                         </label>
                                     ))}
                 </div>
-                {criteriaList.map((criteria, index) => (
-                    <div key={criteria.criteriaId}
-                         className="mb-6 bg-white rounded-lg shadow-lg p-6 border border-gray-200">
-                        <h3 className="text-xl text-700">
-                            {index + 1}. {criteria.criteria}
-                        </h3>
-                        <div className="mt-4">
-                            <label htmlFor={`score-${criteria.criteriaId}`}
-                                   className="block text-sm font-medium text-gray-700">
-                                Оценка
-                            </label>
-                            <div className="mt-1">
-                                    {[0, 1, 2].map((value) => (
-                                        <label key={value} className="inline-flex items-center mr-4">
-                                            <input
-                                                type="radio"
-                                                name={`score-${criteria.criteriaId}`}
-                                                value={value}
-                                                checked={evaluations[index]?.score === String(value)}
-                                                onChange={(e) => handleChange(index, 'score', e.target.value)}
-                                                className="form-radio text-indigo-600"
-                                                disabled={disabled}
-                                            />
-                                            <span className="ml-2">{value}</span>
-                                        </label>
-                                    ))}
-                            {formError && evaluations[index]?.score === '' && (
-                                <p className="text-red-500 text-sm mt-1">Выберите оценку</p>
-                            )}
-                            </div>
-                        </div>
-                        <div className="mt-4">
-                            <label htmlFor={`comment-${criteria.criteriaId}`}
-                                   className="block text-sm font-medium text-gray-700">
-                                Комментарий
-                            </label>
-                            <textarea
-                                id={`comment-${criteria.criteriaId}`}
-                                name={`comment-${criteria.criteriaId}`}
-                                value={evaluations[index]?.comment || ''}
-                                onChange={(e) => handleChange(index, 'comment', e.target.value)}
-                                className="mt-1 p-2 border border-gray-300 rounded-lg w-full h-24 focus:ring-indigo-500 focus:border-indigo-500"
-                                disabled={disabled}
-                            />
-                        </div>
-                    </div>
+<div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+  <table className="w-full">
+    <thead className="bg-gray-50">
+      <tr>
+<th className="w-1/4 px-6 py-3 text-left text-sm font-medium text-gray-700">Критерий</th> {/* Уменьшил ширину */}
+        <th className="w-1/6 px-6 py-3 text-left text-sm font-medium text-gray-700">Оценка</th>   {/* Уменьшил ширину */}
+        <th className="w-7/12 px-6 py-3 text-left text-sm font-medium text-gray-700">Комментарий</th> {/* Увеличил ширину */}
+      </tr>
+    </thead>
+    <tbody>
+      {criteriaList.map((criteria, index) => (
+        <tr 
+          key={criteria.criteriaId}
+          className="border-t border-gray-200 hover:bg-gray-50 transition-colors"
+        >
+          {/* Критерий */}
+          <td className="px-6 py-4 align-top">
+            <div className="text-sm font-semibold text-gray-900">
+              {index + 1}. {criteria.criteria}
+            </div>
+          </td>
+
+          {/* Оценка */}
+          <td className="px-6 py-4 align-top">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center space-x-4">
+                {[0, 1, 2].map((value) => (
+                  <label key={value} className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name={`score-${criteria.criteriaId}`}
+                      value={value}
+                      checked={evaluations[index]?.score === String(value)}
+                      onChange={(e) => !disabled && handleChange(index, 'score', e.target.value)}
+                      className="form-radio text-indigo-600 disabled:bg-blue-600 disabled:border-blue-600"
+                    />
+                    <span className="ml-2">{value}</span>
+                  </label>
                 ))}
+              </div>
+              {formError && evaluations[index]?.score === '' && (
+                <p className="text-red-500 text-sm mt-1">Выберите оценку</p>
+              )}
+            </div>
+          </td>
+
+          {/* Комментарий */}
+          <td className="px-6 py-4 align-top">
+            <textarea
+              id={`comment-${criteria.criteriaId}`}
+              name={`comment-${criteria.criteriaId}`}
+              value={evaluations[index]?.comment || ''}
+              onChange={(e) => handleChange(index, 'comment', e.target.value)}
+              className="p-2 border border-gray-300 rounded-lg w-full h-24 focus:ring-indigo-500 focus:border-indigo-500"
+              disabled={disabled}
+            />
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
                 {!disabled && (
                     <button

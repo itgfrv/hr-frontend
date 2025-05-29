@@ -5,9 +5,6 @@ import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import axios, {AxiosError} from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 
-interface FileRequest {
-    file: FormData
-}
 
 export function FileLoader() {
     const { id } = useParams();
@@ -15,6 +12,8 @@ export function FileLoader() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<File[]>([]);
+    const [link1, setLink1] = useState<string>('');
+    const [link2, setLink2] = useState<string>('');
 
     async function sendFiles() {
         try {
@@ -25,6 +24,9 @@ export function FileLoader() {
                 selectedFile.forEach((file) => {
                     formData.append(`file`, file);
                 });
+
+                formData.append('link1', link1);
+                formData.append('link2', link2);
                 const token = localStorage.getItem('token');
                 if (token) {
                     await axios.post<FormData>(`${process.env.REACT_APP_DOMAIN}/api/v1/case-study/load/${id}`, formData, {
@@ -63,11 +65,39 @@ export function FileLoader() {
         setSelectedFile(updatedFiles);
     };
 
+    const handleLink1Change = (e: ChangeEvent<HTMLInputElement>) => setLink1(e.target.value);
+    const handleLink2Change = (e: ChangeEvent<HTMLInputElement>) => setLink2(e.target.value);
+
     return (
         <>
             <Header />
             <div className="max-w-md mx-auto content-center">
                 <form onSubmit={handleSubmit}>
+                     <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Деталь 6. Регулировочный винт
+                            <input
+                                type="text"
+                                value={link1}
+                                onChange={handleLink1Change}
+                                className="mt-1 p-2 w-full border rounded-md"
+                                placeholder="ссылка"
+                            />
+                        </label>
+                    </div>
+                    
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Деталь 7. Стопорный винт
+                            <input
+                                type="text"
+                                value={link2}
+                                onChange={handleLink2Change}
+                                className="mt-1 p-2 w-full border rounded-md"
+                                placeholder="ссылка"
+                            />
+                        </label>
+                    </div>
                     <div className="mb-4">
                         <label
                             htmlFor="file"
