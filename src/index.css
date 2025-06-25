@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.react-calendar__tile.has-interview {
+  position: relative;
+  background-color: #f0f9ff; /* Голубой фон */
+}
+
+.react-calendar__tile.has-interview:hover {
+  background-color: #d1eaff !important;
+}
+
+.react-calendar__tile--active.has-interview {
+  background: #006edc;
+}
+
+.react-calendar__tile--now.has-interview {
+  background: #ffed76;
+}

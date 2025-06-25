@@ -8,6 +8,24 @@ export interface ICandidate {
     createdDate: string,
     lastActivityDate: string,
     viewed: boolean,
+    comments: IComment[],
+    taskInfos: ITaskInfo[],
+    activityLogs:IActivityLog[]
+}
+export interface ITaskInfo{
+    name:string,
+    attempts:ITaskInfoAttempt[]
+}
+export interface ITaskInfoAttempt{
+    result:number,
+    maxResult:number
+}
+export interface IComment{
+    content: string
+}
+export interface IActivityLog{
+    eventType:string,
+    createdAt: string
 }
 export interface IAttempt{
     id:number,
